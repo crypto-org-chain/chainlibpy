@@ -1,0 +1,104 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.poetry]
+name = "cryptopy"
+version = "1.0.0"  # DO NOT EDIT THIS LINE MANUALLY. LET bump2version UTILITY DO IT
+authors = ["linfeng <linfeng@crypto.com>"]
+description = "Tools for Crypto.com wallet management and offline transaction signing"
+repository = "https://github.com/crypto-com/cryptopy"
+readme = "README.md"
+license = "MIT"
+classifiers = [
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+keywords = ["blockchain", "crypto.com", "cryptocurrency"]
+
+packages = [
+    {include = "cryptopy"},
+]
+include = ["cryptopy/py.typed"]
+
+[tool.poetry.urls]
+"Changelog" = "https://github.com/crypto-com/cryptopy/blob/master/CHANGELOG.md"
+
+[tool.poetry.dependencies]
+python = "^3.6"
+ecdsa = ">=0.14.0, <0.17.0"
+bech32 = "^1.1.0"
+mnemonic = ">=0.19, <0.20"
+hdwallets = "^0.1.0"
+typing-extensions = { version = "^3.7.4", python = "<3.8" }
+
+[tool.poetry.dev-dependencies]
+# Tests
+pytest = "*"
+pytest-randomly = "*"
+pytest-cov = "*"
+
+# Linting
+isort = "*"
+black = { version = "*", allow-prereleases = true }
+flake8 = "*"
+flake8-bugbear = "*"
+flake8-builtins = "*"
+flake8-comprehensions = "*"
+mypy = "*"
+docformatter = "*"
+mdformat = "*"
+mdformat-black = "*"
+mdformat-toc = "*"
+
+# Tools
+pre-commit = "*"
+bump2version = "*"
+
+
+[tool.black]
+line-length = 99
+target_version = ['py36', 'py37', 'py38']
+include = '\.pyi?$'
+exclude = '''
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | venv
+    | _build
+    | buck-out
+    | build
+    | dist
+  )/
+  | tester.py        # also separately exclude a file named tester.py in
+                     # the root of the project
+)
+'''
+
+
+[tool.isort]
+skip = ["venv"]
+# Force imports to be sorted by module, independent of import type
+force_sort_within_sections = true
+# Group first party and local folder imports together
+no_lines_before = ["LOCALFOLDER"]
+
+# Configure isort to work without access to site-packages
+known_first_party = ["cryptopy", "tests"]
+
+# Settings for Black compatibility
+profile = "black"
+line_length = 99
+
+
+[tool.pytest.ini_options]
+addopts = "--strict-markers --strict-config"
+xfail_strict = true
