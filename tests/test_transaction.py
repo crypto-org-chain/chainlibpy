@@ -42,9 +42,7 @@ def test_sign():
     )
     tx._get_sign_message = Mock(return_value=unordered_sign_message)  # type: ignore
 
-    expected_signature = (
-        "s2Yz6UjEpLJuNcyWn5E2adUu5Vn7gbKwrtyoBrQWEhUTomnxlASRnP/1GD/j1MD4PeJsNtE0MOjwOyFt8dU2cw=="
-    )
+    expected_signature = "s2Yz6UjEpLJuNcyWn5E2adUu5Vn7gbKwrtyoBrQWEhUTomnxlASRnP/1GD/j1MD4PeJsNtE0MOjwOyFt8dU2cw=="
 
     actual_signature = tx._sign()
     assert actual_signature == expected_signature
