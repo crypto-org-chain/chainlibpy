@@ -7,7 +7,6 @@ from mnemonic import Mnemonic
 
 DEFAULT_DERIVATION_PATH = "m/44'/394'/0'/0/0"
 DEFAULT_BECH32_HRP = "cro"
-DEFAULT_BECH32_HRP_BASE = "basecro"
 
 
 class Wallet:

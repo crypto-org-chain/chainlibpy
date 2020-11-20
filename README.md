@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.com/crypto-com/cryptopy.svg?branch=master)](https://travis-ci.com/hukkinj1/cryptopy)
-[![codecov.io](https://codecov.io/gh/crypto-com/cryptopy/branch/master/graph/badge.svg)](https://codecov.io/gh/hukkinj1/cryptopy)
+[![Build Status](https://travis-ci.com/crypto-com/cryptopy.svg?branch=master)](https://travis-ci.com//cryptopy)
+[![codecov.io](https://codecov.io/gh/crypto-com/cryptopy/branch/master/graph/badge.svg)](https://codecov.io/gh/crypto-com/cryptopy)
 [![PyPI version](https://img.shields.io/pypi/v/cryptopy)](https://pypi.org/project/cryptopy)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
@@ -73,4 +73,7 @@ This can be used as request body when calling the `POST /txs` endpoint of rpc.
 
 ### thanks
 
-[cosmospy](https://github.com/hukkinj1/cosmospy)
+thanks [cosmospy](https://github.com/hukkinj1/cosmospy) for the following:
+* referenced the packages to sign transaction and create hd wallet
+* python lint config file
+* use same sign method
