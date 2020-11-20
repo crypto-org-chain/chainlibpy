@@ -19,6 +19,7 @@ else:
 SyncMode = Literal["sync", "async", "block"]
 DEFAULT_BECH32_HRP_BASE = "basecro"
 
+
 class Transaction:
     """A Cosmos transaction.
 

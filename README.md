@@ -76,4 +76,4 @@ This can be used as request body when calling the `POST /txs` endpoint of rpc.
 thanks [cosmospy](https://github.com/hukkinj1/cosmospy) for the following:
 * referenced the packages to sign transaction and create hd wallet
 * python lint config file
-* use same sign function name
+* use same sign method
