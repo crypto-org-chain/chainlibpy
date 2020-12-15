@@ -5,7 +5,7 @@ import time
 
 import requests
 
-from cryptopy import Transaction, Wallet
+from chainlibpy import Transaction, Wallet
 
 
 def main():

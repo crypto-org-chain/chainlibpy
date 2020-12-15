@@ -20,7 +20,7 @@ script:
       mypy . &&
       isort --check-only . &&
       black --check . &&
-      docformatter --recursive --check cryptopy/ tests/ &&
+      docformatter --recursive --check chainlibpy/ tests/ &&
       mdformat --check CHANGELOG.md CONTRIBUTING.md README.md
     fi
   # Tests

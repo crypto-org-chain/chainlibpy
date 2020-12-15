@@ -1,3 +1,6 @@
+# Copyright (c) 2020, hukkinj1 (licensed under the MIT License)
+# Modifications Copyright (c) 2020, Foris Limited (licensed under the Apache License, Version 2.0)
+
 import hashlib
 
 import bech32
@@ -25,13 +28,13 @@ class Wallet:
         """Get a private key from a mnemonic seed and a derivation path.
 
         Assumes a BIP39 mnemonic seed with no passphrase. Raises
-        `cryptopy.BIP32DerivationError` if the resulting private key is
+        `chainlibpy.BIP32DerivationError` if the resulting private key is
         invalid.
         """
         seed_bytes = Mnemonic.to_seed(self.seed, passphrase="")
         hd_wallet = hdwallets.BIP32.from_seed(seed_bytes)
         # This can raise a `hdwallets.BIP32DerivationError` (which we alias so
-        # that the same exception type is also in the `cryptopy` namespace).
+        # that the same exception type is also in the `chainlibpy` namespace).
         derived_privkey = hd_wallet.get_privkey_from_path(self.path)
 
         return derived_privkey

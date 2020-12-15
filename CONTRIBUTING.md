@@ -25,7 +25,7 @@
 
 ## Version bumping
 
-`cryptopy` adheres to semantic versioning via the `bump2version` utility.
+`chainlibpy` adheres to semantic versioning via the `bump2version` utility.
 Install it with pip:
 
 ```bash

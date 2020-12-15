@@ -1,3 +1,6 @@
+# Copyright (c) 2020, hukkinj1 (licensed under the MIT License)
+# Modifications Copyright (c) 2020, Foris Limited (licensed under the Apache License, Version 2.0)
+
 import base64
 import hashlib
 import json
@@ -6,7 +9,7 @@ from typing import Any, Dict, List
 
 import ecdsa
 
-from cryptopy._wallet import Wallet
+from chainlibpy._wallet import Wallet
 
 if sys.version_info < (3, 8):
     from typing_extensions import Literal

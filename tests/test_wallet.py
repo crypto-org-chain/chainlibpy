@@ -1,4 +1,7 @@
-from cryptopy import Wallet
+# Copyright (c) 2020, hukkinj1 (licensed under the MIT License)
+# Modifications Copyright (c) 2020, Foris Limited (licensed under the Apache License, Version 2.0)
+
+from chainlibpy import Wallet
 
 
 def test_generate_wallet():

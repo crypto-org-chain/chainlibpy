@@ -1,9 +1,9 @@
-[![Build Status](https://travis-ci.com/crypto-com/cryptopy.svg?branch=master)](https://travis-ci.com//cryptopy)
-[![codecov.io](https://codecov.io/gh/crypto-com/cryptopy/branch/master/graph/badge.svg)](https://codecov.io/gh/crypto-com/cryptopy)
-[![PyPI version](https://img.shields.io/pypi/v/cryptopy)](https://pypi.org/project/cryptopy)
+[![Build Status](https://travis-ci.com/crypto-com/chainlibpy.svg?branch=master)](https://travis-ci.com//chainlibpy)
+[![codecov.io](https://codecov.io/gh/crypto-com/chainlibpy/branch/master/graph/badge.svg)](https://codecov.io/gh/crypto-com/chainlibpy)
+[![PyPI version](https://img.shields.io/pypi/v/chainlibpy)](https://pypi.org/project/chainlibpy)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-# cryptopy
+# chainlibpy
 
 <!--- Don't edit the version line below manually. Let bump2version do it for you. -->
 
@@ -22,10 +22,10 @@
 
 ## Installing<a name="installing"></a>
 
-Installing from PyPI repository (https://pypi.org/project/cryptopy):
+Installing from PyPI repository (https://pypi.org/project/chainlibpy):
 
 ```bash
-pip install cryptopy
+pip install chainlibpy
 ```
 
 ## Usage<a name="usage"></a>
@@ -33,7 +33,7 @@ pip install cryptopy
 ### Generating a wallet<a name="generating-a-wallet"></a>
 
 ```python
-from cryptopy import Wallet
+from chainlibpy import Wallet
 
 # create a wallet
 wallet = Wallet.new()
@@ -49,7 +49,7 @@ print(wallet.address)
 ### Signing transactions<a name="signing-transactions"></a>
 
 ```python
-from cryptopy import Transaction, Wallet
+from chainlibpy import Transaction, Wallet
 
 wallet = Wallet.new()
 tx = Transaction(

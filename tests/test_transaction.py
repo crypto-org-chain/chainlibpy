@@ -1,6 +1,9 @@
+# Copyright (c) 2020, hukkinj1 (licensed under the MIT License)
+# Modifications Copyright (c) 2020, Foris Limited (licensed under the Apache License, Version 2.0)
+
 from unittest.mock import Mock
 
-from cryptopy import Transaction, Wallet
+from chainlibpy import Transaction, Wallet
 
 
 def test_sign():

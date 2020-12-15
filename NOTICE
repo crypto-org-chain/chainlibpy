@@ -1,0 +1,9 @@
+Crypto.com Chain Python Library
+Copyright 2020, Foris Limited ("Crypto.com"). 
+
+This project contains portions of code derived from the following libraries:
+
+* cosmospy
+ * Copyright: Copyright (c) 2020 hukkinj1
+ * License: MIT
+ * Repository: https://github.com/hukkinj1/cosmospy
