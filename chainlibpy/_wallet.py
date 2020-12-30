@@ -28,8 +28,8 @@ class Wallet:
         """Get a private key from a mnemonic seed and a derivation path.
 
         Assumes a BIP39 mnemonic seed with no passphrase. Raises
-        `chainlibpy.BIP32DerivationError` if the resulting private key is
-        invalid.
+        `chainlibpy.BIP32DerivationError` if the resulting private key
+        is invalid.
         """
         seed_bytes = Mnemonic.to_seed(self.seed, passphrase="")
         hd_wallet = hdwallets.BIP32.from_seed(seed_bytes)
@@ -41,7 +41,9 @@ class Wallet:
 
     @property
     def public_key(self) -> bytes:
-        privkey_obj = ecdsa.SigningKey.from_string(self.private_key, curve=ecdsa.SECP256k1)
+        privkey_obj = ecdsa.SigningKey.from_string(
+            self.private_key, curve=ecdsa.SECP256k1
+        )
         pubkey_obj = privkey_obj.get_verifying_key()
         return pubkey_obj.to_string("compressed")
 

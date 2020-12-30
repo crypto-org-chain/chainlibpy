@@ -46,7 +46,7 @@ def main():
     amount = 1 * 10 ** 8
     tx.add_transfer(to_address=address_2, amount=amount)
     signed_tx = tx.get_pushable()
-    print(signed_tx)
+    print("signed tx:", signed_tx)
     response = requests.post(url_tx, json=signed_tx)
     if not response.ok:
         raise Exception(response.reason)
