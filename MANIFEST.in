@@ -1,0 +1,9 @@
+include *.md
+include LICENSE
+include *.yaml
+include .bumpversion.cfg
+include .coveragerc
+include .mypy.ini
+include NOTICE
+recursive-include chainlibpy *.typed
+recursive-include example *.py

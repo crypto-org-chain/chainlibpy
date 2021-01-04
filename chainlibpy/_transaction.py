@@ -70,9 +70,7 @@ class Transaction:
         self._msgs.append(transfer)
 
     def get_pushable(self) -> dict:
-        """
-        get the request post to the /txs
-        """
+        """get the request post to the /txs."""
         pubkey = self._wallet.public_key
         base64_pubkey = base64.b64encode(pubkey).decode("utf-8")
         pushable_tx = {
@@ -86,7 +84,10 @@ class Transaction:
                 "signatures": [
                     {
                         "signature": self._sign(),
-                        "pub_key": {"type": "tendermint/PubKeySecp256k1", "value": base64_pubkey},
+                        "pub_key": {
+                            "type": "tendermint/PubKeySecp256k1",
+                            "value": base64_pubkey,
+                        },
                         "account_number": str(self._account_num),
                         "sequence": str(self._sequence),
                     }
@@ -97,12 +98,18 @@ class Transaction:
         return pushable_tx
 
     def _sign(self) -> str:
-        message_str = json.dumps(self._get_sign_message(), separators=(",", ":"), sort_keys=True)
+        message_str = json.dumps(
+            self._get_sign_message(), separators=(",", ":"), sort_keys=True
+        )
         message_bytes = message_str.encode("utf-8")
 
-        privkey = ecdsa.SigningKey.from_string(self._wallet.private_key, curve=ecdsa.SECP256k1)
+        privkey = ecdsa.SigningKey.from_string(
+            self._wallet.private_key, curve=ecdsa.SECP256k1
+        )
         signature_compact = privkey.sign_deterministic(
-            message_bytes, hashfunc=hashlib.sha256, sigencode=ecdsa.util.sigencode_string_canonize
+            message_bytes,
+            hashfunc=hashlib.sha256,
+            sigencode=ecdsa.util.sigencode_string_canonize,
         )
 
         signature_base64_str = base64.b64encode(signature_compact).decode("utf-8")

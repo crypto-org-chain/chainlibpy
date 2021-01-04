@@ -17,6 +17,7 @@
 - [Usage](<#usage>)
   - [Generating a wallet](<#generating-a-wallet>)
   - [Signing transactions](<#signing-transactions>)
+  - [thanks](<#thanks>)
 
 <!-- mdformat-toc end -->
 
@@ -37,7 +38,7 @@ from chainlibpy import Wallet
 
 # create a wallet
 wallet = Wallet.new()
-# or you can recover from an mnomic 
+# or you can recover from an mnomic
 # mnemonic = "dune car envelope chuckle elbow slight proud fury remove candy uphold puzzle call select sibling sport gadget please want vault glance verb damage gown"
 # wallet = Wallet(mnemonic)
 
@@ -71,9 +72,10 @@ One or more token transfers can be added to a transaction by calling the `add_tr
 When the transaction is fully prepared, calling `get_pushable` will return a signed transaction in the form of a JSON string.
 This can be used as request body when calling the `POST /txs` endpoint of rpc.
 
-### thanks
+### thanks<a name="thanks"></a>
 
 thanks [cosmospy](https://github.com/hukkinj1/cosmospy) for the following:
-* referenced the packages to sign transaction and create hd wallet
-* python lint config file
-* use same sign method
+
+- referenced the packages to sign transaction and create hd wallet
+- python lint config file
+- use same sign method

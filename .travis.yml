@@ -10,21 +10,7 @@ jobs:
   allow_failures:
     - python: 'nightly'
 install:
-  - pip install "poetry==1.1.4"
-  - poetry config virtualenvs.create false && poetry install --no-interaction --no-ansi
-script:
-  # Static checks (only in Python 3.6 job)
-  - |
-    if [[ $TRAVIS_PYTHON_VERSION == '3.6' ]]; then
-      flake8 . &&
-      mypy . &&
-      isort --check-only . &&
-      black --check . &&
-      docformatter --recursive --check chainlibpy/ tests/ &&
-      mdformat --check CHANGELOG.md CONTRIBUTING.md README.md
-    fi
-  # Tests
-  - pytest --cov --cov-fail-under=95
-after_success:
-  # Upload coverage (only in Python 3.6 job, to not spam codecov with the same coverage report)
-  - if [[ $TRAVIS_PYTHON_VERSION == '3.6' ]]; then pip install codecov && codecov; fi
+  - pip install tox-travis
+script: tox
+notifications:
+  email: false
