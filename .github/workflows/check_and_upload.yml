@@ -1,0 +1,36 @@
+name: check and upload
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  tox_test:
+    name: Tox test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        tox_env: [py36, py37, py38, py39]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run Tox tests
+      id: test
+      uses: fedora-python/tox-github-action@master
+      with:
+        tox_env: ${{ matrix.tox_env }}
+  upload:
+    needs: [tox_test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: install dependencies
+        run: python3 -m pip install --user --upgrade setuptools wheel
+      - name: build
+        run: python3 setup.py sdist bdist_wheel
+      - name: install jfrog
+        run: curl -fL https://getcli.jfrog.io | sh
+      - name: upload to jfrog
+        run: ./jfrog rt config --url $ARTIFACTORY_URL --user $ARTIFACTORY_USER --access-token $ARTIFACTORY_PASSWORD --interactive=false &&
+          ./jfrog rt u "dist/*" "chainlibpy" --build-name=Crypto-Blockchain-PYPI --build-number=${{ github.run_id }} --flat=true
