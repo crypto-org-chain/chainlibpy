@@ -1,0 +1,22 @@
+name: test
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  tox_test:
+    name: Tox test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        tox_env: [py36, py37, py38, py39]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run Tox tests
+      id: test
+      uses: fedora-python/tox-github-action@master
+      with:
+        tox_env: ${{ matrix.tox_env }}
