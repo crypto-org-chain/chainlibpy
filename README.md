@@ -7,7 +7,7 @@
 
 <!--- Don't edit the version line below manually. Let bump2version do it for you. -->
 
-> Version 1.0.0
+> Version 1.0.1
 
 > Tools for [Crypto.com](https://github.com/crypto-com/chain-main) wallet management and offline transaction signing
 

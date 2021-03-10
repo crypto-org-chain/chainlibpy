@@ -5,7 +5,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "chainlibpy"
-version = "1.0.0"  # DO NOT EDIT THIS LINE MANUALLY. LET bump2version UTILITY DO IT
+version = "1.0.1"  # DO NOT EDIT THIS LINE MANUALLY. LET bump2version UTILITY DO IT
 authors = ["linfeng <linfeng@crypto.com>"]
 description = "Tools for Crypto.com wallet management and offline transaction signing"
 repository = "https://github.com/crypto-com/chainlibpy"
