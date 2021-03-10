@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.com/crypto-com/chainlibpy.svg?branch=master)](https://travis-ci.com//chainlibpy)
-[![codecov.io](https://codecov.io/gh/crypto-com/chainlibpy/branch/master/graph/badge.svg)](https://codecov.io/gh/crypto-com/chainlibpy)
+[![Build Status](https://travis-ci.com/crypto-org-chain/chainlibpy.svg?branch=master)](https://travis-ci.com//chainlibpy)
+[![codecov.io](https://codecov.io/gh/crypto-org-chain/chainlibpy/branch/master/graph/badge.svg)](https://codecov.io/gh/crypto-org-chain/chainlibpy)
 [![PyPI version](https://img.shields.io/pypi/v/chainlibpy)](https://pypi.org/project/chainlibpy)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
@@ -7,9 +7,9 @@
 
 <!--- Don't edit the version line below manually. Let bump2version do it for you. -->
 
-> Version 1.0.0
+> Version 1.0.1
 
-> Tools for [Crypto.com](https://github.com/crypto-com/chain-main) wallet management and offline transaction signing
+> Tools for [Crypto.org Chain](https://github.com/crypto-org-chain/chain-main) wallet management and offline transaction signing
 
 <!-- mdformat-toc start --slug=github --maxlevel=6 --minlevel=2 -->
 

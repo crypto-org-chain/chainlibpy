@@ -13,11 +13,11 @@ long_description = (here / "README.md").read_text(encoding="utf-8")
 
 setup(
     name="chainlibpy",
-    version="1.0.0",
-    description="Tools for Crypto.com wallet management and offline transaction signing",
+    version="1.0.1",
+    description="Tools for Crypto.org Chain wallet management and offline transaction signing",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/crypto-com/chainlibpy",
+    url="https://github.com/crypto-org-chain/chainlibpy",
     author="Linfeng.Yuan",
     author_email="linfeng@crypto.com",
     classifiers=[
@@ -44,9 +44,9 @@ setup(
         "test": ["pytest", "pytest-cov", "pytest-randomly"],
     },
     project_urls={
-        "Bug Reports": "https://github.com/crypto-com/chainlibpy/issues",
+        "Bug Reports": "https://github.com/crypto-org-chain/chainlibpy/issues",
         "Funding": "https://donate.pypi.org",
         "Say Thanks!": "https://github.com/hukkinj1/cosmospy",
-        "Source": "https://github.com/crypto-com/chainlibpy",
+        "Source": "https://github.com/crypto-org-chain/chainlibpy",
     },
 )

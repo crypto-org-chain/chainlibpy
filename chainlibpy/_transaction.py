@@ -18,10 +18,10 @@ else:
 
 
 # Valid transaction broadcast modes for the `POST /txs` endpoint of the
-# Crypto.com REST API.
+# Crypto.org Chain REST API.
 SyncMode = Literal["sync", "async", "block"]
-DEFAULT_BECH32_HRP_BASE = "basecro"
-
+DEFAULT_BASE_DENOM = "basecro"
+DEFAULT_BECH32_HRP_BASE = "cro"
 
 class Transaction:
     """A Cosmos transaction.
@@ -57,7 +57,7 @@ class Transaction:
         self._msgs: List[dict] = []
 
     def add_transfer(
-        self, to_address: str, amount: int, base_denom: str = DEFAULT_BECH32_HRP_BASE
+        self, to_address: str, amount: int, base_denom: str = DEFAULT_BASE_DENOM
     ) -> None:
         transfer = {
             "type": "cosmos-sdk/MsgSend",
