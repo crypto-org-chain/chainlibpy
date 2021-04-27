@@ -1,54 +1,9 @@
 # Copyright (c) 2020, hukkinj1 (licensed under the MIT License)
 # Modifications Copyright (c) 2020, Foris Limited (licensed under the Apache License, Version 2.0)
 
-from unittest.mock import Mock
-
 from chainlibpy import Transaction, Wallet
-
-
-def test_sign():
-    unordered_sign_message = {
-        "chain_id": "tendermint_test",
-        "account_number": "1",
-        "fee": {"gas": "21906", "amount": [{"amount": "0", "denom": ""}]},
-        "memo": "",
-        "sequence": "0",
-        "msgs": [
-            {
-                "type": "cosmos-sdk/Send",
-                "value": {
-                    "inputs": [
-                        {
-                            "address": "tcro1qperwt9wrnkg5k9e5gzfgjppzpqhyav5j24d66",
-                            "coins": [{"amount": "1", "denom": "STAKE"}],
-                        }
-                    ],
-                    "outputs": [
-                        {
-                            "address": "tcro1yeckxz7tapz34kjwnjxvmxzurerquhtrmxmuxt",
-                            "coins": [{"amount": "1", "denom": "STAKE"}],
-                        }
-                    ],
-                },
-            }
-        ],
-    }
-    seed = "dune car envelope chuckle elbow slight proud fury remove candy uphold puzzle call select sibling sport gadget please want vault glance verb damage gown"
-    wallet = Wallet(seed)
-    dummy_num = 1337
-    tx = Transaction(
-        wallet=wallet,
-        account_num=dummy_num,
-        sequence=dummy_num,
-        fee=dummy_num,
-        gas=dummy_num,
-    )
-    tx._get_sign_message = Mock(return_value=unordered_sign_message)  # type: ignore
-
-    expected_signature = "s2Yz6UjEpLJuNcyWn5E2adUu5Vn7gbKwrtyoBrQWEhUTomnxlASRnP/1GD/j1MD4PeJsNtE0MOjwOyFt8dU2cw=="
-
-    actual_signature = tx._sign()
-    assert actual_signature == expected_signature
+from chainlibpy.amino import Coin, StdFee
+from chainlibpy.amino.message import MsgSend
 
 
 def test_get_pushable_tx():
@@ -69,6 +24,7 @@ def test_get_pushable_tx():
                 "amount": [{"amount": "100000", "denom": "basecro"}],
             },
             "memo": "",
+            "timeout_height": "0",
             "signatures": [
                 {
                     "signature": "WjB3aB3k/nUK33iyGvbMPu55iiyCJBr7ooKQXwxE1BFAdBjJXIblp1aVPUjlr/blFAlHW7fLJct9zc/7ty8ZQA==",
@@ -89,16 +45,19 @@ def test_get_pushable_tx():
     _tx_total_cost = 388000
     amount = _tx_total_cost - fee
 
+    std_fee = StdFee("30000", [Coin(str(fee))])
     tx = Transaction(
         wallet=wallet,
         account_num=11335,
         sequence=0,
-        fee=fee,
-        gas=30000,
+        fee=std_fee,
         chain_id="test",
     )
-    tx.add_transfer(
-        to_address="cro103l758ps7403sd9c0y8j6hrfw4xyl70j4mmwkf", amount=amount
+    msg = MsgSend(
+        wallet.address,
+        "cro103l758ps7403sd9c0y8j6hrfw4xyl70j4mmwkf",
+        [Coin(str(amount))],
     )
+    tx.add_msg(msg)
     pushable_tx = tx.get_pushable()
     assert pushable_tx == expected_pushable_tx

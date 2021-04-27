@@ -4,24 +4,14 @@
 import base64
 import hashlib
 import json
-import sys
-from typing import Any, Dict, List
+from typing import List
 
 import ecdsa
 
-from chainlibpy._wallet import Wallet
+from chainlibpy.amino import StdFee, StdSignDoc, SyncMode
+from chainlibpy.amino.message import Msg
+from chainlibpy.wallet import Wallet
 
-if sys.version_info < (3, 8):
-    from typing_extensions import Literal
-else:
-    from typing import Literal
-
-
-# Valid transaction broadcast modes for the `POST /txs` endpoint of the
-# Crypto.org Chain REST API.
-SyncMode = Literal["sync", "async", "block"]
-DEFAULT_BASE_DENOM = "basecro"
-DEFAULT_BECH32_HRP_BASE = "cro"
 
 class Transaction:
     """A Cosmos transaction.
@@ -34,40 +24,27 @@ class Transaction:
 
     def __init__(
         self,
-        *,
         wallet: Wallet,
         account_num: int,
         sequence: int,
-        fee: int = 0,
-        gas: int = 200000,
-        fee_denom: str = "basecro",
+        fee: StdFee = StdFee.default(),
         memo: str = "",
-        chain_id: str = "crypto-crocncl-1",
+        chain_id: str = "crypto-org-chain-mainnet-1",
         sync_mode: SyncMode = "sync",
+        timeout_height: int = 0,
     ) -> None:
         self._wallet = wallet
-        self._account_num = account_num
-        self._sequence = sequence
+        self._account_num = str(account_num)
+        self._sequence = str(sequence)
         self._fee = fee
-        self._fee_denom = fee_denom
-        self._gas = gas
         self._memo = memo
         self._chain_id = chain_id
         self._sync_mode = sync_mode
-        self._msgs: List[dict] = []
+        self._msgs: List[Msg] = []
+        self._timeout_height = str(timeout_height)
 
-    def add_transfer(
-        self, to_address: str, amount: int, base_denom: str = DEFAULT_BASE_DENOM
-    ) -> None:
-        transfer = {
-            "type": "cosmos-sdk/MsgSend",
-            "value": {
-                "from_address": self._wallet.address,
-                "to_address": to_address,
-                "amount": [{"denom": base_denom, "amount": str(amount)}],
-            },
-        }
-        self._msgs.append(transfer)
+    def add_msg(self, msg: Msg):
+        self._msgs.append(msg)
 
     def get_pushable(self) -> dict:
         """get the request post to the /txs."""
@@ -75,12 +52,10 @@ class Transaction:
         base64_pubkey = base64.b64encode(pubkey).decode("utf-8")
         pushable_tx = {
             "tx": {
-                "msg": self._msgs,
-                "fee": {
-                    "gas": str(self._gas),
-                    "amount": [{"amount": str(self._fee), "denom": self._fee_denom}],
-                },
+                "msg": [m.to_dict() for m in self._msgs],
+                "fee": self._fee.to_dict(),
                 "memo": self._memo,
+                "timeout_height": self._timeout_height,
                 "signatures": [
                     {
                         "signature": self._sign(),
@@ -88,8 +63,8 @@ class Transaction:
                             "type": "tendermint/PubKeySecp256k1",
                             "value": base64_pubkey,
                         },
-                        "account_number": str(self._account_num),
-                        "sequence": str(self._sequence),
+                        "account_number": self._account_num,
+                        "sequence": self._sequence,
                     }
                 ],
             },
@@ -98,8 +73,9 @@ class Transaction:
         return pushable_tx
 
     def _sign(self) -> str:
+        sign_doc = self._get_sign_doc()
         message_str = json.dumps(
-            self._get_sign_message(), separators=(",", ":"), sort_keys=True
+            sign_doc.to_dict(), separators=(",", ":"), sort_keys=True
         )
         message_bytes = message_str.encode("utf-8")
 
@@ -115,16 +91,14 @@ class Transaction:
         signature_base64_str = base64.b64encode(signature_compact).decode("utf-8")
         return signature_base64_str
 
-    def _get_sign_message(self) -> Dict[str, Any]:
-        result = {
-            "account_number": str(self._account_num),
-            "sequence": str(self._sequence),
-            "chain_id": self._chain_id,
-            "memo": self._memo,
-            "fee": {
-                "gas": str(self._gas),
-                "amount": [{"amount": str(self._fee), "denom": self._fee_denom}],
-            },
-            "msgs": self._msgs,
-        }
-        return result
+    def _get_sign_doc(self) -> StdSignDoc:
+        sign_doc = StdSignDoc(
+            account_number=self._account_num,
+            sequence=self._sequence,
+            chain_id=self._chain_id,
+            memo=self._memo,
+            fee=self._fee.to_dict(),
+            msgs=self._msgs,
+            timeout_height=self._timeout_height,
+        )
+        return sign_doc
