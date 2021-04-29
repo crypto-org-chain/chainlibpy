@@ -7,23 +7,23 @@
 
 <!--- Don't edit the version line below manually. Let bump2version do it for you. -->
 
-> Version 1.0.1
+> Version 2.0.0
 
 > Tools for [Crypto.org Chain](https://github.com/crypto-org-chain/chain-main) wallet management and offline transaction signing
 
 <!-- mdformat-toc start --slug=github --maxlevel=6 --minlevel=2 -->
 
-- [Installing](<#installing>)
-- [Usage](<#usage>)
-  - [Generating a wallet](<#generating-a-wallet>)
-  - [Signing transactions](<#signing-transactions>)
-  - [thanks](<#thanks>)
+- [Installing](#installing)
+- [Usage](#usage)
+  - [Generating a wallet](#generating-a-wallet)
+  - [Signing transactions](#signing-transactions)
+  - [thanks](#thanks)
 
 <!-- mdformat-toc end -->
 
 ## Installing<a name="installing"></a>
 
-Installing from PyPI repository (https://pypi.org/project/chainlibpy):
+Require Python >= 3.7, installing from PyPI repository (https://pypi.org/project/chainlibpy):
 
 ```bash
 pip install chainlibpy
@@ -51,19 +51,27 @@ print(wallet.address)
 
 ```python
 from chainlibpy import Transaction, Wallet
+from chainlibpy.amino import StdFee, Coin
+from chainlibpy.amino.message import MsgSend
 
 wallet = Wallet.new()
+fee = StdFee("300000", [Coin("100000")])
 tx = Transaction(
     wallet=wallet,
     account_num=11335,
     sequence=0,
-    fee=1000,
-    gas=70000,
+    fee=fee,
     memo="",
     chain_id="test",
     sync_mode="sync",
 )
-tx.add_transfer(to_address="cro103l758ps7403sd9c0y8j6hrfw4xyl70j4mmwkf", amount=387000)
+from_add = wallet.address
+msg = MsgSend(
+    from_address=wallet.address,
+    to_address="cro103l758ps7403sd9c0y8j6hrfw4xyl70j4mmwkf",
+    amount="387000",
+)
+tx.add_msg(msg)
 pushable_tx = tx.get_pushable()
 ```
 

@@ -13,7 +13,7 @@ long_description = (here / "README.md").read_text(encoding="utf-8")
 
 setup(
     name="chainlibpy",
-    version="1.0.1",
+    version="2.0.0",
     description="Tools for Crypto.org Chain wallet management and offline transaction signing",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -25,7 +25,6 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
         "License :: OSI Approved :: Apache Software License",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
@@ -33,7 +32,7 @@ setup(
     ],
     keywords="CRO, blockchain, signature, crypto.com",
     packages=find_packages(),
-    python_requires=">=3.6, <4",
+    python_requires=">=3.7, <4",
     install_requires=[
         "ecdsa>=0.14.0, <0.17.0",
         "bech32~=1.1.0",

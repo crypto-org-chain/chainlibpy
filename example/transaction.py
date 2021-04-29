@@ -6,6 +6,8 @@ import time
 import requests
 
 from chainlibpy import Transaction, Wallet
+from chainlibpy.amino import Coin, StdFee
+from chainlibpy.amino.message import MsgSend
 
 
 def main():
@@ -18,6 +20,7 @@ def main():
     print(address_2)
 
     # the api port setted in ${home_dir of chain-maind}/config/app.toml, the default is ~/.chain-maind/config/app.toml
+    # and should set api enabled in app.toml
     base_url = "http://127.0.0.1:1317"
     url_tx = f"{base_url}/txs"
     url_account = f"{base_url}/cosmos/auth/v1beta1/accounts/{address_1}"
@@ -35,16 +38,17 @@ def main():
     sequence = int(account_info["sequence"])
 
     # make transaction
+    fee = StdFee("300000", [Coin("100000")])
     tx = Transaction(
         wallet=wallet_1,
         account_num=account_num,
         sequence=sequence,
         chain_id="test",
-        fee=100000,
-        gas=300000,
+        fee=fee,
     )
-    amount = 1 * 10 ** 8
-    tx.add_transfer(to_address=address_2, amount=amount)
+    amount = str(1 * 10 ** 8)
+    msg = MsgSend(from_address=address_1, to_address=address_2, amount=[Coin(amount)])
+    tx.add_msg(msg)
     signed_tx = tx.get_pushable()
     print("signed tx:", signed_tx)
     response = requests.post(url_tx, json=signed_tx)
