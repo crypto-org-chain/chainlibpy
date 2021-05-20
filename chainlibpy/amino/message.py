@@ -1,12 +1,13 @@
+import hashlib
 from dataclasses import dataclass
 from typing import List
 
 from .basic import (Coin, CommissionRates, Content, Description, Input, Output,
-                    VoteOption, to_dict)
+                    TimeoutHeight, VoteOption, to_dict)
 
 
 class Msg:
-    def to_dict(self):
+    def to_dict(self) -> dict:
         return {
             "type": f"cosmos-sdk/{self.__class__.__name__}",
             "value": to_dict(self),
@@ -193,3 +194,65 @@ class MsgUndelegate(Msg):
     # Bech32 encoded validator address
     validator_address: str
     amount: Coin
+
+
+@dataclass(init=True, repr=True, eq=True, order=True, frozen=True)
+class IbcMsgTransfer(Msg):
+    source_port: str
+    source_channel: str
+    sender: str
+    receiver: str
+    coin: Coin
+    packet_timeout_height: TimeoutHeight = TimeoutHeight()
+    packet_timeout_timestamp: str = "0"
+    absolute_timeouts: bool = True
+
+    def fix_coin_denom(self):
+        raw_denom = self.coin.denom
+        if raw_denom.startswith("ibc/"):
+            return
+        else:
+            denom_split = raw_denom.split("/")
+            if denom_split[0] == raw_denom:
+                denom_trace = {
+                    "path": "",
+                    "base_denom": raw_denom,
+                }
+            else:
+                denom_trace = {
+                    "path": "/".join(denom_split[0:-1]),
+                    "base_denom": denom_split[-1],
+                }
+            # return 'ibc/{hash(tracePath + baseDenom)}'
+            # If the trace is empty, it will return the base denomination.
+            if denom_trace["path"] != "":
+                self.coin.denom = "ibc/{}".format(self.get_full_denom_path_checksum(denom_trace))
+            else:
+                self.coin.denom = denom_trace["base_denom"]
+
+    @classmethod
+    def get_full_denom_path_checksum(cls, denom_trace):
+        if denom_trace["path"] != "":
+            data = "{}/{}".format(denom_trace["path"], denom_trace["base_denom"])
+        else:
+            data = denom_trace["base_denom"]
+        return hashlib.sha256(data.encode()).hexdigest().upper()
+
+    def to_dict(self) -> dict:
+        self.fix_coin_denom()
+        data = {
+            "type": "cosmos-sdk/MsgTransfer",
+            "value": {
+                "receiver": self.receiver,
+                "sender": self.sender,
+                "source_channel": self.source_channel,
+                "source_port": self.source_port,
+                "token": self.coin.to_dict(),
+            }
+        }
+        timeout_height = self.packet_timeout_height.to_dict()
+        if timeout_height:
+            data["value"]["timeout_height"] = timeout_height
+        if self.packet_timeout_timestamp != "0":
+            data["value"]["timeout_timestamp"] = self.packet_timeout_timestamp
+        return data
