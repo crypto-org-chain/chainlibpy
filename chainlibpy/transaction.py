@@ -10,6 +10,7 @@ import ecdsa
 
 from chainlibpy.amino import StdFee, StdSignDoc, SyncMode
 from chainlibpy.amino.message import Msg
+from chainlibpy.amino.tx import Pubkey, Signature, StdTx
 from chainlibpy.wallet import Wallet
 
 
@@ -50,24 +51,12 @@ class Transaction:
         """get the request post to the /txs."""
         pubkey = self._wallet.public_key
         base64_pubkey = base64.b64encode(pubkey).decode("utf-8")
+        pubkey = Pubkey(value=base64_pubkey)
+        signature = Signature(self._sign(), pubkey, self._account_num, self._sequence)
+        std_tx = StdTx(self._msgs, self._fee, self._memo, self._timeout_height, [signature])
+
         pushable_tx = {
-            "tx": {
-                "msg": [m.to_dict() for m in self._msgs],
-                "fee": self._fee.to_dict(),
-                "memo": self._memo,
-                "timeout_height": self._timeout_height,
-                "signatures": [
-                    {
-                        "signature": self._sign(),
-                        "pub_key": {
-                            "type": "tendermint/PubKeySecp256k1",
-                            "value": base64_pubkey,
-                        },
-                        "account_number": self._account_num,
-                        "sequence": self._sequence,
-                    }
-                ],
-            },
+            "tx": std_tx.to_dict(),
             "mode": self._sync_mode,
         }
         return pushable_tx

@@ -45,10 +45,24 @@ class BasicObj:
         return to_dict(self)
 
 
-@dataclass(init=True, repr=True, eq=True, order=True, frozen=True)
+@dataclass(init=True, repr=True, eq=True, order=True, frozen=False)
 class Coin(BasicObj):
     amount: str = "0"
     denom: str = DEFAULT_BECH32_HRP_BASE
+
+
+@dataclass(init=True, repr=True, eq=True, order=True, frozen=True)
+class TimeoutHeight(BasicObj):
+    revision_number: str = "0"
+    revision_height: str = "0"
+
+    def to_dict(self):
+        data = {}
+        if self.revision_number != "0":
+            data["revision_number"] = self.revision_number
+        if self.revision_height != "0":
+            data["revision_height"] = self.revision_height
+        return data
 
 
 @dataclass(init=True, repr=True, eq=True, order=True, frozen=True)
@@ -58,7 +72,7 @@ class StdFee(BasicObj):
 
     @classmethod
     def default(cls):
-        return cls("2000", [Coin()])
+        return cls("200000", [])
 
 
 @dataclass(init=True, repr=True, eq=True, order=True, frozen=True)
