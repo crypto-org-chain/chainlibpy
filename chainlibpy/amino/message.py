@@ -1,4 +1,5 @@
 import hashlib
+import json
 from dataclasses import dataclass
 from typing import List
 
@@ -7,9 +8,13 @@ from .basic import (Coin, CommissionRates, Content, Description, Input, Output,
 
 
 class Msg:
+    @property
+    def msg_type(self):
+        return f"cosmos-sdk/{self.__class__.__name__}"
+
     def to_dict(self) -> dict:
         return {
-            "type": f"cosmos-sdk/{self.__class__.__name__}",
+            "type": self.msg_type,
             "value": to_dict(self),
         }
 
@@ -256,3 +261,76 @@ class IbcMsgTransfer(Msg):
         if self.packet_timeout_timestamp != "0":
             data["value"]["timeout_timestamp"] = self.packet_timeout_timestamp
         return data
+
+
+@dataclass(init=True, repr=True, eq=True, order=True, frozen=True)
+class MsgNFT(Msg):
+    @property
+    def msg_type(self):
+        return f"chainmain/nft/{self.__class__.__name__}"
+
+
+@dataclass(init=True, repr=True, eq=True, order=True, frozen=True)
+class MsgIssueDenom(MsgNFT):
+    id: str
+    name: str
+    schema: dict
+    sender: str
+
+    def to_dict(self) -> dict:
+        schema = json.dumps(self.schema, separators=(",", ":"))
+        data = {
+            "type": self.msg_type,
+            "value": {
+                "id": self.id,
+                "name": self.name,
+                "schema": schema,
+                "sender": self.sender,
+            }
+        }
+        return data
+
+
+@dataclass(init=True, repr=True, eq=True, order=True, frozen=True)
+class MsgTransferNFT(MsgNFT):
+    id: str
+    denom_id: str
+    sender: str
+    recipient: str
+
+
+@dataclass(init=True, repr=True, eq=True, order=True, frozen=True)
+class MsgEditNFT(MsgNFT):
+    id: str
+    denom_id: str
+    name: str
+    uri: str
+    data: str
+    sender: str
+
+
+@dataclass(init=True, repr=True, eq=True, order=True, frozen=True)
+class MsgMintNFT(MsgNFT):
+    id: str
+    denom_id: str
+    name: str
+    uri: str
+    data: str
+    sender: str
+    recipient: str
+
+
+@dataclass(init=True, repr=True, eq=True, order=True, frozen=True)
+class MsgBurnNFT(MsgNFT):
+    id: str
+    denom_id: str
+    sender: str
+
+
+@dataclass(init=True, repr=True, eq=True, order=True, frozen=True)
+class BaseNFT(MsgNFT):
+    id: str
+    name: str
+    uri: str
+    data: str
+    owner: str
