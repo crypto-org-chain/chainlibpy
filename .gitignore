@@ -108,3 +108,6 @@ venv.bak/
 
 # A script that can be used for quick testing
 tester.py
+
+# vscode
+.vscode/

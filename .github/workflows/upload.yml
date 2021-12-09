@@ -2,8 +2,8 @@ name: upload
 
 on:
   push:
-    branches:
-      - master
+    tags:
+      - 'v*.*.*'
 
 jobs:
   upload:
@@ -11,12 +11,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: install dependencies
-        run: python3 -m pip install --user --upgrade setuptools wheel
+        run: python3 -m pip install --user --upgrade poetry
       - name: build
-        run: python3 setup.py sdist bdist_wheel
-      - name: install jfrog
-        run: curl -fL https://getcli.jfrog.io | sh
-      - name: upload to jfrog
-        run: | 
-          ./jfrog rt config --url "${{ secrets.ARTIFACTORY_URL }}" --user "${{ secrets.ARTIFACTORY_USER }}" --access-token "${{ secrets.ARTIFACTORY_PASSWORD }}" --interactive=false
-          ./jfrog rt u --build-name=Crypto-Blockchain-PYPI --build-number=${{ github.run_id }} --flat=true "dist/*" "${{ secrets.ARTIFACTORY_NAME }}"
+        run: poetry build
+      - name: release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
