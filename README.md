@@ -5,10 +5,6 @@
 
 # chainlibpy
 
-<!--- Don't edit the version line below manually. Let bump2version do it for you. -->
-
-> Version 2.0.0
-
 > Tools for [Crypto.org Chain](https://github.com/crypto-org-chain/chain-main) wallet management and offline transaction signing
 
 <!-- mdformat-toc start --slug=github --maxlevel=6 --minlevel=2 -->
@@ -16,8 +12,12 @@
 - [Installing](#installing)
 - [Usage](#usage)
   - [Generating a wallet](#generating-a-wallet)
-  - [Signing transactions](#signing-transactions)
-  - [thanks](#thanks)
+  - [Signing and broadcasting a transaction](#signing-and-broadcasting-a-transaction)
+  - [Acknowledgement](#acknowledgement)
+- [Development](#development)
+  - [Set up development environment](#set-up-development-environment)
+  - [Generate gRPC code](#generate-grpc-code)
+  - [Tox](#tox)
 
 <!-- mdformat-toc end -->
 
@@ -47,43 +47,90 @@ print(wallet.public_key)
 print(wallet.address)
 ```
 
-### Signing transactions<a name="signing-transactions"></a>
+### Signing and broadcasting a transaction<a name="signing-and-broadcasting-a-transaction"></a>
 
 ```python
-from chainlibpy import Transaction, Wallet
-from chainlibpy.amino import StdFee, Coin
-from chainlibpy.amino.message import MsgSend
+from chainlibpy.generated.cosmos.base.v1beta1.coin_pb2 import Coin
+from chainlibpy.grpc_client import GrpcClient
+from chainlibpy.transaction import sign_transaction
+from chainlibpy.wallet import Wallet
 
-wallet = Wallet.new()
-fee = StdFee("300000", [Coin("100000")])
-tx = Transaction(
-    wallet=wallet,
-    account_num=11335,
-    sequence=0,
-    fee=fee,
-    memo="",
-    chain_id="test",
-    sync_mode="sync",
-)
-from_add = wallet.address
-msg = MsgSend(
-    from_address=wallet.address,
-    to_address="cro103l758ps7403sd9c0y8j6hrfw4xyl70j4mmwkf",
-    amount="387000",
-)
-tx.add_msg(msg)
-pushable_tx = tx.get_pushable()
+# Refer to example/transaction.py for how to obtain CONSTANT values below
+DENOM = "basecro"
+MNEMONIC_PHRASE = "first ... last"
+TO_ADDRESS = "cro...add"
+AMOUNT = [Coin(amount="10000", denom=DENOM)]
+CHAIN_ID = "chainmaind"
+GRPC_ENDPOINT = "0.0.0.0:26653"
+
+wallet = Wallet(MNEMONIC_PHRASE)
+client = GrpcClient(wallet, CHAIN_ID, GRPC_ENDPOINT)
+
+from_address = wallet.address
+account_number = client.query_account_data(wallet.address).account_number
+
+msg = client.get_packed_send_msg(wallet.address, TO_ADDRESS, AMOUNT)
+tx = client.generate_tx([msg], [wallet.address], [wallet.public_key])
+sign_transaction(tx, wallet.private_key, CHAIN_ID, account_number)
+client.broadcast_tx(tx)
 ```
 
-One or more token transfers can be added to a transaction by calling the `add_transfer` method.
+You may also refer to `example/transaction.py` on how to use a high level function `bank_send()` to sign and broadcast a transaction
 
-When the transaction is fully prepared, calling `get_pushable` will return a signed transaction in the form of a JSON string.
-This can be used as request body when calling the `POST /txs` endpoint of rpc.
+### Acknowledgement<a name="acknowledgement"></a>
 
-### thanks<a name="thanks"></a>
-
-thanks [cosmospy](https://github.com/hukkinj1/cosmospy) for the following:
+Thanks [cosmospy](https://github.com/hukkinj1/cosmospy) for the following:
 
 - referenced the packages to sign transaction and create hd wallet
 - python lint config file
 - use same sign method
+
+## Development<a name="development"></a>
+
+### Set up development environment<a name="set-up-development-environment"></a>
+
+More about [poetry](https://python-poetry.org/docs/).
+
+```
+poetry install
+```
+
+### Generate gRPC code<a name="generate-grpc-code"></a>
+
+```
+poetry shell
+./generated_protos.sh
+```
+
+**NOTE:** By default, `master` branch of `cosmos-sdk` is used. Use command below to download a different version:
+
+```
+./generated_protos.sh -COSMOS_REF=v0.44.5
+```
+
+If more generated gRPC code is needed in the future, please add the `.proto` files needed here in `generated_protos.sh`:
+
+```bash
+# Add .proto files here to generate respective gRPC code
+PROTO_FILES="
+$COSMOS_SDK_DIR/proto/cosmos/auth/v1beta1/auth.proto
+...
+```
+
+### Tox<a name="tox"></a>
+
+```
+pyenv local 3.7.a 3.8.b 3.9.c
+```
+
+`a`, `b` and `c` is python versions installed on your computer by `pyenv`. More about [pyenv](https://github.com/pyenv/pyenv).
+
+After this command, a `.python-version` file will be generated at project root directory, which means python versions inside `.python-version` are presented for this project. So running `tox` command with `py{37,38,39}` configuration should succeed.\
+Then run to verify. This command is recommended to run before pushing a commit.
+
+```sh
+poetry run tox
+# or
+poetry shell
+tox
+```

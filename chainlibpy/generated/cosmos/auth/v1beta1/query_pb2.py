@@ -25,7 +25,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=b'Z)github.com/cosmos/cosmos-sdk/x/auth/types',
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x1f\x63osmos/auth/v1beta1/query.proto\x12\x13\x63osmos.auth.v1beta1\x1a*cosmos/base/query/v1beta1/pagination.proto\x1a\x14gogoproto/gogo.proto\x1a\x19google/protobuf/any.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x1e\x63osmos/auth/v1beta1/auth.proto\x1a\x19\x63osmos_proto/cosmos.proto\"R\n\x14QueryAccountsRequest\x12:\n\npagination\x18\x01 \x01(\x0b\x32&.cosmos.base.query.v1beta1.PageRequest\"\x8a\x01\n\x15QueryAccountsResponse\x12\x34\n\x08\x61\x63\x63ounts\x18\x01 \x03(\x0b\x32\x14.google.protobuf.AnyB\x0c\xca\xb4-\x08\x41\x63\x63ountI\x12;\n\npagination\x18\x02 \x01(\x0b\x32\'.cosmos.base.query.v1beta1.PageResponse\"0\n\x13QueryAccountRequest\x12\x0f\n\x07\x61\x64\x64ress\x18\x01 \x01(\t:\x08\xe8\xa0\x1f\x00\x88\xa0\x1f\x00\"K\n\x14QueryAccountResponse\x12\x33\n\x07\x61\x63\x63ount\x18\x01 \x01(\x0b\x32\x14.google.protobuf.AnyB\x0c\xca\xb4-\x08\x41\x63\x63ountI\"\x14\n\x12QueryParamsRequest\"H\n\x13QueryParamsResponse\x12\x31\n\x06params\x18\x01 \x01(\x0b\x32\x1b.cosmos.auth.v1beta1.ParamsB\x04\xc8\xde\x1f\x00\x32\xa7\x03\n\x05Query\x12\x88\x01\n\x08\x41\x63\x63ounts\x12).cosmos.auth.v1beta1.QueryAccountsRequest\x1a*.cosmos.auth.v1beta1.QueryAccountsResponse\"%\x82\xd3\xe4\x93\x02\x1f\x12\x1d/cosmos/auth/v1beta1/accounts\x12\x8f\x01\n\x07\x41\x63\x63ount\x12(.cosmos.auth.v1beta1.QueryAccountRequest\x1a).cosmos.auth.v1beta1.QueryAccountResponse\"/\x82\xd3\xe4\x93\x02)\x12\'/cosmos/auth/v1beta1/accounts/{address}\x12\x80\x01\n\x06Params\x12\'.cosmos.auth.v1beta1.QueryParamsRequest\x1a(.cosmos.auth.v1beta1.QueryParamsResponse\"#\x82\xd3\xe4\x93\x02\x1d\x12\x1b/cosmos/auth/v1beta1/paramsB+Z)github.com/cosmos/cosmos-sdk/x/auth/typesb\x06proto3'
+  serialized_pb=b'\n\x1f\x63osmos/auth/v1beta1/query.proto\x12\x13\x63osmos.auth.v1beta1\x1a*cosmos/base/query/v1beta1/pagination.proto\x1a\x14gogoproto/gogo.proto\x1a\x19google/protobuf/any.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x1e\x63osmos/auth/v1beta1/auth.proto\x1a\x19\x63osmos_proto/cosmos.proto\"R\n\x14QueryAccountsRequest\x12:\n\npagination\x18\x01 \x01(\x0b\x32&.cosmos.base.query.v1beta1.PageRequest\"\x8a\x01\n\x15QueryAccountsResponse\x12\x34\n\x08\x61\x63\x63ounts\x18\x01 \x03(\x0b\x32\x14.google.protobuf.AnyB\x0c\xca\xb4-\x08\x41\x63\x63ountI\x12;\n\npagination\x18\x02 \x01(\x0b\x32\'.cosmos.base.query.v1beta1.PageResponse\"J\n\x13QueryAccountRequest\x12)\n\x07\x61\x64\x64ress\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressString:\x08\xe8\xa0\x1f\x00\x88\xa0\x1f\x00\"\x1c\n\x1aQueryModuleAccountsRequest\"H\n\x13QueryParamsResponse\x12\x31\n\x06params\x18\x01 \x01(\x0b\x32\x1b.cosmos.auth.v1beta1.ParamsB\x04\xc8\xde\x1f\x00\"K\n\x14QueryAccountResponse\x12\x33\n\x07\x61\x63\x63ount\x18\x01 \x01(\x0b\x32\x14.google.protobuf.AnyB\x0c\xca\xb4-\x08\x41\x63\x63ountI\"\x14\n\x12QueryParamsRequest\"Y\n\x1bQueryModuleAccountsResponse\x12:\n\x08\x61\x63\x63ounts\x18\x01 \x03(\x0b\x32\x14.google.protobuf.AnyB\x12\xca\xb4-\x0eModuleAccountI\"\x15\n\x13\x42\x65\x63h32PrefixRequest\"-\n\x14\x42\x65\x63h32PrefixResponse\x12\x15\n\rbech32_prefix\x18\x01 \x01(\t\"4\n\x1b\x41\x64\x64ressBytesToStringRequest\x12\x15\n\raddress_bytes\x18\x01 \x01(\x0c\"6\n\x1c\x41\x64\x64ressBytesToStringResponse\x12\x16\n\x0e\x61\x64\x64ress_string\x18\x01 \x01(\t\"5\n\x1b\x41\x64\x64ressStringToBytesRequest\x12\x16\n\x0e\x61\x64\x64ress_string\x18\x01 \x01(\t\"5\n\x1c\x41\x64\x64ressStringToBytesResponse\x12\x15\n\raddress_bytes\x18\x01 \x01(\x0c\x32\xbd\x08\n\x05Query\x12\x88\x01\n\x08\x41\x63\x63ounts\x12).cosmos.auth.v1beta1.QueryAccountsRequest\x1a*.cosmos.auth.v1beta1.QueryAccountsResponse\"%\x82\xd3\xe4\x93\x02\x1f\x12\x1d/cosmos/auth/v1beta1/accounts\x12\x8f\x01\n\x07\x41\x63\x63ount\x12(.cosmos.auth.v1beta1.QueryAccountRequest\x1a).cosmos.auth.v1beta1.QueryAccountResponse\"/\x82\xd3\xe4\x93\x02)\x12\'/cosmos/auth/v1beta1/accounts/{address}\x12\x80\x01\n\x06Params\x12\'.cosmos.auth.v1beta1.QueryParamsRequest\x1a(.cosmos.auth.v1beta1.QueryParamsResponse\"#\x82\xd3\xe4\x93\x02\x1d\x12\x1b/cosmos/auth/v1beta1/params\x12\xa1\x01\n\x0eModuleAccounts\x12/.cosmos.auth.v1beta1.QueryModuleAccountsRequest\x1a\x30.cosmos.auth.v1beta1.QueryModuleAccountsResponse\",\x82\xd3\xe4\x93\x02&\x12$/cosmos/auth/v1beta1/module_accounts\x12\x88\x01\n\x0c\x42\x65\x63h32Prefix\x12(.cosmos.auth.v1beta1.Bech32PrefixRequest\x1a).cosmos.auth.v1beta1.Bech32PrefixResponse\"#\x82\xd3\xe4\x93\x02\x1d\x12\x1b/cosmos/auth/v1beta1/bech32\x12\xb0\x01\n\x14\x41\x64\x64ressBytesToString\x12\x30.cosmos.auth.v1beta1.AddressBytesToStringRequest\x1a\x31.cosmos.auth.v1beta1.AddressBytesToStringResponse\"3\x82\xd3\xe4\x93\x02-\x12+/cosmos/auth/v1beta1/bech32/{address_bytes}\x12\xb1\x01\n\x14\x41\x64\x64ressStringToBytes\x12\x30.cosmos.auth.v1beta1.AddressStringToBytesRequest\x1a\x31.cosmos.auth.v1beta1.AddressStringToBytesResponse\"4\x82\xd3\xe4\x93\x02.\x12,/cosmos/auth/v1beta1/bech32/{address_string}B+Z)github.com/cosmos/cosmos-sdk/x/auth/typesb\x06proto3'
   ,
   dependencies=[cosmos_dot_base_dot_query_dot_v1beta1_dot_pagination__pb2.DESCRIPTOR,gogoproto_dot_gogo__pb2.DESCRIPTOR,google_dot_protobuf_dot_any__pb2.DESCRIPTOR,google_dot_api_dot_annotations__pb2.DESCRIPTOR,cosmos_dot_auth_dot_v1beta1_dot_auth__pb2.DESCRIPTOR,cosmos__proto_dot_cosmos__pb2.DESCRIPTOR,])
 
@@ -117,7 +117,7 @@ _QUERYACCOUNTREQUEST = _descriptor.Descriptor(
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+      serialized_options=b'\322\264-\024cosmos.AddressString', file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -131,45 +131,13 @@ _QUERYACCOUNTREQUEST = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=463,
-  serialized_end=511,
+  serialized_end=537,
 )
 
 
-_QUERYACCOUNTRESPONSE = _descriptor.Descriptor(
-  name='QueryAccountResponse',
-  full_name='cosmos.auth.v1beta1.QueryAccountResponse',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='account', full_name='cosmos.auth.v1beta1.QueryAccountResponse.account', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=b'\312\264-\010AccountI', file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=513,
-  serialized_end=588,
-)
-
-
-_QUERYPARAMSREQUEST = _descriptor.Descriptor(
-  name='QueryParamsRequest',
-  full_name='cosmos.auth.v1beta1.QueryParamsRequest',
+_QUERYMODULEACCOUNTSREQUEST = _descriptor.Descriptor(
+  name='QueryModuleAccountsRequest',
+  full_name='cosmos.auth.v1beta1.QueryModuleAccountsRequest',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
@@ -187,8 +155,8 @@ _QUERYPARAMSREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=590,
-  serialized_end=610,
+  serialized_start=539,
+  serialized_end=567,
 )
 
 
@@ -219,21 +187,304 @@ _QUERYPARAMSRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=612,
-  serialized_end=684,
+  serialized_start=569,
+  serialized_end=641,
+)
+
+
+_QUERYACCOUNTRESPONSE = _descriptor.Descriptor(
+  name='QueryAccountResponse',
+  full_name='cosmos.auth.v1beta1.QueryAccountResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='account', full_name='cosmos.auth.v1beta1.QueryAccountResponse.account', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=b'\312\264-\010AccountI', file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=643,
+  serialized_end=718,
+)
+
+
+_QUERYPARAMSREQUEST = _descriptor.Descriptor(
+  name='QueryParamsRequest',
+  full_name='cosmos.auth.v1beta1.QueryParamsRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=720,
+  serialized_end=740,
+)
+
+
+_QUERYMODULEACCOUNTSRESPONSE = _descriptor.Descriptor(
+  name='QueryModuleAccountsResponse',
+  full_name='cosmos.auth.v1beta1.QueryModuleAccountsResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='accounts', full_name='cosmos.auth.v1beta1.QueryModuleAccountsResponse.accounts', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=b'\312\264-\016ModuleAccountI', file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=742,
+  serialized_end=831,
+)
+
+
+_BECH32PREFIXREQUEST = _descriptor.Descriptor(
+  name='Bech32PrefixRequest',
+  full_name='cosmos.auth.v1beta1.Bech32PrefixRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=833,
+  serialized_end=854,
+)
+
+
+_BECH32PREFIXRESPONSE = _descriptor.Descriptor(
+  name='Bech32PrefixResponse',
+  full_name='cosmos.auth.v1beta1.Bech32PrefixResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='bech32_prefix', full_name='cosmos.auth.v1beta1.Bech32PrefixResponse.bech32_prefix', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=856,
+  serialized_end=901,
+)
+
+
+_ADDRESSBYTESTOSTRINGREQUEST = _descriptor.Descriptor(
+  name='AddressBytesToStringRequest',
+  full_name='cosmos.auth.v1beta1.AddressBytesToStringRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='address_bytes', full_name='cosmos.auth.v1beta1.AddressBytesToStringRequest.address_bytes', index=0,
+      number=1, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=903,
+  serialized_end=955,
+)
+
+
+_ADDRESSBYTESTOSTRINGRESPONSE = _descriptor.Descriptor(
+  name='AddressBytesToStringResponse',
+  full_name='cosmos.auth.v1beta1.AddressBytesToStringResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='address_string', full_name='cosmos.auth.v1beta1.AddressBytesToStringResponse.address_string', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=957,
+  serialized_end=1011,
+)
+
+
+_ADDRESSSTRINGTOBYTESREQUEST = _descriptor.Descriptor(
+  name='AddressStringToBytesRequest',
+  full_name='cosmos.auth.v1beta1.AddressStringToBytesRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='address_string', full_name='cosmos.auth.v1beta1.AddressStringToBytesRequest.address_string', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1013,
+  serialized_end=1066,
+)
+
+
+_ADDRESSSTRINGTOBYTESRESPONSE = _descriptor.Descriptor(
+  name='AddressStringToBytesResponse',
+  full_name='cosmos.auth.v1beta1.AddressStringToBytesResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='address_bytes', full_name='cosmos.auth.v1beta1.AddressStringToBytesResponse.address_bytes', index=0,
+      number=1, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1068,
+  serialized_end=1121,
 )
 
 _QUERYACCOUNTSREQUEST.fields_by_name['pagination'].message_type = cosmos_dot_base_dot_query_dot_v1beta1_dot_pagination__pb2._PAGEREQUEST
 _QUERYACCOUNTSRESPONSE.fields_by_name['accounts'].message_type = google_dot_protobuf_dot_any__pb2._ANY
 _QUERYACCOUNTSRESPONSE.fields_by_name['pagination'].message_type = cosmos_dot_base_dot_query_dot_v1beta1_dot_pagination__pb2._PAGERESPONSE
-_QUERYACCOUNTRESPONSE.fields_by_name['account'].message_type = google_dot_protobuf_dot_any__pb2._ANY
 _QUERYPARAMSRESPONSE.fields_by_name['params'].message_type = cosmos_dot_auth_dot_v1beta1_dot_auth__pb2._PARAMS
+_QUERYACCOUNTRESPONSE.fields_by_name['account'].message_type = google_dot_protobuf_dot_any__pb2._ANY
+_QUERYMODULEACCOUNTSRESPONSE.fields_by_name['accounts'].message_type = google_dot_protobuf_dot_any__pb2._ANY
 DESCRIPTOR.message_types_by_name['QueryAccountsRequest'] = _QUERYACCOUNTSREQUEST
 DESCRIPTOR.message_types_by_name['QueryAccountsResponse'] = _QUERYACCOUNTSRESPONSE
 DESCRIPTOR.message_types_by_name['QueryAccountRequest'] = _QUERYACCOUNTREQUEST
+DESCRIPTOR.message_types_by_name['QueryModuleAccountsRequest'] = _QUERYMODULEACCOUNTSREQUEST
+DESCRIPTOR.message_types_by_name['QueryParamsResponse'] = _QUERYPARAMSRESPONSE
 DESCRIPTOR.message_types_by_name['QueryAccountResponse'] = _QUERYACCOUNTRESPONSE
 DESCRIPTOR.message_types_by_name['QueryParamsRequest'] = _QUERYPARAMSREQUEST
-DESCRIPTOR.message_types_by_name['QueryParamsResponse'] = _QUERYPARAMSRESPONSE
+DESCRIPTOR.message_types_by_name['QueryModuleAccountsResponse'] = _QUERYMODULEACCOUNTSRESPONSE
+DESCRIPTOR.message_types_by_name['Bech32PrefixRequest'] = _BECH32PREFIXREQUEST
+DESCRIPTOR.message_types_by_name['Bech32PrefixResponse'] = _BECH32PREFIXRESPONSE
+DESCRIPTOR.message_types_by_name['AddressBytesToStringRequest'] = _ADDRESSBYTESTOSTRINGREQUEST
+DESCRIPTOR.message_types_by_name['AddressBytesToStringResponse'] = _ADDRESSBYTESTOSTRINGRESPONSE
+DESCRIPTOR.message_types_by_name['AddressStringToBytesRequest'] = _ADDRESSSTRINGTOBYTESREQUEST
+DESCRIPTOR.message_types_by_name['AddressStringToBytesResponse'] = _ADDRESSSTRINGTOBYTESRESPONSE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 QueryAccountsRequest = _reflection.GeneratedProtocolMessageType('QueryAccountsRequest', (_message.Message,), {
@@ -257,6 +508,20 @@ QueryAccountRequest = _reflection.GeneratedProtocolMessageType('QueryAccountRequ
   })
 _sym_db.RegisterMessage(QueryAccountRequest)
 
+QueryModuleAccountsRequest = _reflection.GeneratedProtocolMessageType('QueryModuleAccountsRequest', (_message.Message,), {
+  'DESCRIPTOR' : _QUERYMODULEACCOUNTSREQUEST,
+  '__module__' : 'cosmos.auth.v1beta1.query_pb2'
+  # @@protoc_insertion_point(class_scope:cosmos.auth.v1beta1.QueryModuleAccountsRequest)
+  })
+_sym_db.RegisterMessage(QueryModuleAccountsRequest)
+
+QueryParamsResponse = _reflection.GeneratedProtocolMessageType('QueryParamsResponse', (_message.Message,), {
+  'DESCRIPTOR' : _QUERYPARAMSRESPONSE,
+  '__module__' : 'cosmos.auth.v1beta1.query_pb2'
+  # @@protoc_insertion_point(class_scope:cosmos.auth.v1beta1.QueryParamsResponse)
+  })
+_sym_db.RegisterMessage(QueryParamsResponse)
+
 QueryAccountResponse = _reflection.GeneratedProtocolMessageType('QueryAccountResponse', (_message.Message,), {
   'DESCRIPTOR' : _QUERYACCOUNTRESPONSE,
   '__module__' : 'cosmos.auth.v1beta1.query_pb2'
@@ -271,19 +536,63 @@ QueryParamsRequest = _reflection.GeneratedProtocolMessageType('QueryParamsReques
   })
 _sym_db.RegisterMessage(QueryParamsRequest)
 
-QueryParamsResponse = _reflection.GeneratedProtocolMessageType('QueryParamsResponse', (_message.Message,), {
-  'DESCRIPTOR' : _QUERYPARAMSRESPONSE,
+QueryModuleAccountsResponse = _reflection.GeneratedProtocolMessageType('QueryModuleAccountsResponse', (_message.Message,), {
+  'DESCRIPTOR' : _QUERYMODULEACCOUNTSRESPONSE,
   '__module__' : 'cosmos.auth.v1beta1.query_pb2'
-  # @@protoc_insertion_point(class_scope:cosmos.auth.v1beta1.QueryParamsResponse)
+  # @@protoc_insertion_point(class_scope:cosmos.auth.v1beta1.QueryModuleAccountsResponse)
   })
-_sym_db.RegisterMessage(QueryParamsResponse)
+_sym_db.RegisterMessage(QueryModuleAccountsResponse)
+
+Bech32PrefixRequest = _reflection.GeneratedProtocolMessageType('Bech32PrefixRequest', (_message.Message,), {
+  'DESCRIPTOR' : _BECH32PREFIXREQUEST,
+  '__module__' : 'cosmos.auth.v1beta1.query_pb2'
+  # @@protoc_insertion_point(class_scope:cosmos.auth.v1beta1.Bech32PrefixRequest)
+  })
+_sym_db.RegisterMessage(Bech32PrefixRequest)
+
+Bech32PrefixResponse = _reflection.GeneratedProtocolMessageType('Bech32PrefixResponse', (_message.Message,), {
+  'DESCRIPTOR' : _BECH32PREFIXRESPONSE,
+  '__module__' : 'cosmos.auth.v1beta1.query_pb2'
+  # @@protoc_insertion_point(class_scope:cosmos.auth.v1beta1.Bech32PrefixResponse)
+  })
+_sym_db.RegisterMessage(Bech32PrefixResponse)
+
+AddressBytesToStringRequest = _reflection.GeneratedProtocolMessageType('AddressBytesToStringRequest', (_message.Message,), {
+  'DESCRIPTOR' : _ADDRESSBYTESTOSTRINGREQUEST,
+  '__module__' : 'cosmos.auth.v1beta1.query_pb2'
+  # @@protoc_insertion_point(class_scope:cosmos.auth.v1beta1.AddressBytesToStringRequest)
+  })
+_sym_db.RegisterMessage(AddressBytesToStringRequest)
+
+AddressBytesToStringResponse = _reflection.GeneratedProtocolMessageType('AddressBytesToStringResponse', (_message.Message,), {
+  'DESCRIPTOR' : _ADDRESSBYTESTOSTRINGRESPONSE,
+  '__module__' : 'cosmos.auth.v1beta1.query_pb2'
+  # @@protoc_insertion_point(class_scope:cosmos.auth.v1beta1.AddressBytesToStringResponse)
+  })
+_sym_db.RegisterMessage(AddressBytesToStringResponse)
+
+AddressStringToBytesRequest = _reflection.GeneratedProtocolMessageType('AddressStringToBytesRequest', (_message.Message,), {
+  'DESCRIPTOR' : _ADDRESSSTRINGTOBYTESREQUEST,
+  '__module__' : 'cosmos.auth.v1beta1.query_pb2'
+  # @@protoc_insertion_point(class_scope:cosmos.auth.v1beta1.AddressStringToBytesRequest)
+  })
+_sym_db.RegisterMessage(AddressStringToBytesRequest)
+
+AddressStringToBytesResponse = _reflection.GeneratedProtocolMessageType('AddressStringToBytesResponse', (_message.Message,), {
+  'DESCRIPTOR' : _ADDRESSSTRINGTOBYTESRESPONSE,
+  '__module__' : 'cosmos.auth.v1beta1.query_pb2'
+  # @@protoc_insertion_point(class_scope:cosmos.auth.v1beta1.AddressStringToBytesResponse)
+  })
+_sym_db.RegisterMessage(AddressStringToBytesResponse)
 
 
 DESCRIPTOR._options = None
 _QUERYACCOUNTSRESPONSE.fields_by_name['accounts']._options = None
+_QUERYACCOUNTREQUEST.fields_by_name['address']._options = None
 _QUERYACCOUNTREQUEST._options = None
-_QUERYACCOUNTRESPONSE.fields_by_name['account']._options = None
 _QUERYPARAMSRESPONSE.fields_by_name['params']._options = None
+_QUERYACCOUNTRESPONSE.fields_by_name['account']._options = None
+_QUERYMODULEACCOUNTSRESPONSE.fields_by_name['accounts']._options = None
 
 _QUERY = _descriptor.ServiceDescriptor(
   name='Query',
@@ -292,8 +601,8 @@ _QUERY = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=687,
-  serialized_end=1110,
+  serialized_start=1124,
+  serialized_end=2209,
   methods=[
   _descriptor.MethodDescriptor(
     name='Accounts',
@@ -323,6 +632,46 @@ _QUERY = _descriptor.ServiceDescriptor(
     input_type=_QUERYPARAMSREQUEST,
     output_type=_QUERYPARAMSRESPONSE,
     serialized_options=b'\202\323\344\223\002\035\022\033/cosmos/auth/v1beta1/params',
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='ModuleAccounts',
+    full_name='cosmos.auth.v1beta1.Query.ModuleAccounts',
+    index=3,
+    containing_service=None,
+    input_type=_QUERYMODULEACCOUNTSREQUEST,
+    output_type=_QUERYMODULEACCOUNTSRESPONSE,
+    serialized_options=b'\202\323\344\223\002&\022$/cosmos/auth/v1beta1/module_accounts',
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='Bech32Prefix',
+    full_name='cosmos.auth.v1beta1.Query.Bech32Prefix',
+    index=4,
+    containing_service=None,
+    input_type=_BECH32PREFIXREQUEST,
+    output_type=_BECH32PREFIXRESPONSE,
+    serialized_options=b'\202\323\344\223\002\035\022\033/cosmos/auth/v1beta1/bech32',
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='AddressBytesToString',
+    full_name='cosmos.auth.v1beta1.Query.AddressBytesToString',
+    index=5,
+    containing_service=None,
+    input_type=_ADDRESSBYTESTOSTRINGREQUEST,
+    output_type=_ADDRESSBYTESTOSTRINGRESPONSE,
+    serialized_options=b'\202\323\344\223\002-\022+/cosmos/auth/v1beta1/bech32/{address_bytes}',
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='AddressStringToBytes',
+    full_name='cosmos.auth.v1beta1.Query.AddressStringToBytes',
+    index=6,
+    containing_service=None,
+    input_type=_ADDRESSSTRINGTOBYTESREQUEST,
+    output_type=_ADDRESSSTRINGTOBYTESRESPONSE,
+    serialized_options=b'\202\323\344\223\002.\022,/cosmos/auth/v1beta1/bech32/{address_string}',
     create_key=_descriptor._internal_create_key,
   ),
 ])

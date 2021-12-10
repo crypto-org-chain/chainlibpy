@@ -10,10 +10,7 @@ class Pubkey(BasicObj):
     value: str
 
     def to_dict(self):
-        return {
-            "type": "tendermint/PubKeySecp256k1",
-            "value": self.value
-        }
+        return {"type": "tendermint/PubKeySecp256k1", "value": self.value}
 
 
 @dataclass(init=True, repr=True, eq=True, order=True, frozen=True)
@@ -28,7 +25,7 @@ class Signature(BasicObj):
             "signature": self.signature,
             "pub_key": self.pub_key.to_dict(),
             "account_number": self.account_number,
-            "sequence": self.sequence
+            "sequence": self.sequence,
         }
 
 
@@ -46,5 +43,5 @@ class StdTx(BasicObj):
             "fee": self.fee.to_dict(),
             "memo": self.memo,
             "timeout_height": self.timeout_height,
-            "signatures": [s.to_dict() for s in self.signatures]
+            "signatures": [s.to_dict() for s in self.signatures],
         }

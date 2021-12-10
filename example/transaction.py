@@ -1,69 +1,45 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import time
+from chainlibpy.generated.cosmos.base.v1beta1.coin_pb2 import Coin
+from chainlibpy.grpc_client import GrpcClient
+from chainlibpy.wallet import Wallet
 
-import requests
+# NOTE:
+# Recommend to use pystarport(https://pypi.org/project/pystarport/) to setup a testnet locally
 
-from chainlibpy import Transaction, Wallet
-from chainlibpy.amino import Coin, StdFee
-from chainlibpy.amino.message import MsgSend
+DENOM = "basecro"
+# Obtained from {directory_started_pystarport}/data/chainmaind/accounts.json
+# To recover one of the genesis account
+MNEMONIC_PHRASE = "first ... last"
+# Obtained from {directory_started_pystarport}/data/chainmaind/accounts.json
+# Another address to receive coins sent
+TO_ADDRESS = "cro...add"
+AMOUNT = [Coin(amount="10000", denom=DENOM)]
+# Obtained from {directory_started_pystarport}/data/chainmaind/genesis.json
+CHAIN_ID = "chainmaind"
+# Obtained from {directory_started_pystarport}/data/chainmaind/nodex/config/app.toml
+# Look for "gRPC Configuration" section
+GRPC_ENDPOINT = "0.0.0.0:26653"
 
 
 def main():
-    seed = "dune car envelope chuckle elbow slight proud fury remove candy uphold puzzle call select sibling sport gadget please want vault glance verb damage gown"
-    wallet_1 = Wallet(seed)
-    address_1 = wallet_1.address
-    print(address_1)
-    wallet_2 = Wallet.new()
-    address_2 = wallet_2.address
-    print(address_2)
+    wallet = Wallet(MNEMONIC_PHRASE)
+    client = GrpcClient(wallet, CHAIN_ID, GRPC_ENDPOINT)
 
-    # the api port setted in ${home_dir of chain-maind}/config/app.toml, the default is ~/.chain-maind/config/app.toml
-    # and should set api enabled in app.toml
-    base_url = "http://127.0.0.1:1317"
-    url_tx = f"{base_url}/txs"
-    url_account = f"{base_url}/cosmos/auth/v1beta1/accounts/{address_1}"
-    url_balance = f"{base_url}/cosmos/bank/v1beta1/balances/{address_1}"
+    from_address = wallet.address
+    res = client.get_balance(from_address, DENOM)
+    print(f"from_address initial balance: {res.balance.amount}")
+    res = client.get_balance(TO_ADDRESS, DENOM)
+    print(f"to_address initial balance: {res.balance.amount}")
 
-    # get the balance of address_1
-    response = requests.get(url_balance)
-    balance_1 = int(response.json()["balances"][0]["amount"])
-    print(f"balance of address 1: {balance_1}")
+    client.bank_send(TO_ADDRESS, AMOUNT)
 
-    # get the account info
-    response = requests.get(url_account)
-    account_info = response.json()["account"]
-    account_num = int(account_info["account_number"])
-    sequence = int(account_info["sequence"])
-
-    # make transaction
-    fee = StdFee("300000", [Coin("100000")])
-    tx = Transaction(
-        wallet=wallet_1,
-        account_num=account_num,
-        sequence=sequence,
-        chain_id="test",
-        fee=fee,
-    )
-    amount = str(1 * 10 ** 8)
-    msg = MsgSend(from_address=address_1, to_address=address_2, amount=[Coin(amount)])
-    tx.add_msg(msg)
-    signed_tx = tx.get_pushable()
-    print("signed tx:", signed_tx)
-    response = requests.post(url_tx, json=signed_tx)
-    if not response.ok:
-        raise Exception(response.reason)
-    result = response.json()
-    print(result)
-    if result.get("code"):
-        raise Exception(result["raw_log"])
-
-    # get the balance after sync
-    time.sleep(5)
-    response = requests.get(url_balance)
-    balance_1_after = int(response.json()["balances"][0]["amount"])
-    print(f"balance of address 1 after transfer: {balance_1_after}")
+    print("after successful transaction")
+    res = client.get_balance(from_address, DENOM)
+    print(f"from_address updated balance: {res.balance.amount}")
+    res = client.get_balance(TO_ADDRESS, DENOM)
+    print(f"to_address updated balance: {res.balance.amount}")
 
 
 if __name__ == "__main__":
