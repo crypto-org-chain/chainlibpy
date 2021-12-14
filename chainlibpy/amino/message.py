@@ -3,8 +3,17 @@ import json
 from dataclasses import dataclass
 from typing import List
 
-from .basic import (Coin, CommissionRates, Content, Description, Input, Output,
-                    TimeoutHeight, VoteOption, to_dict)
+from .basic import (
+    Coin,
+    CommissionRates,
+    Content,
+    Description,
+    Input,
+    Output,
+    TimeoutHeight,
+    VoteOption,
+    to_dict,
+)
 
 
 class Msg:
@@ -253,7 +262,7 @@ class IbcMsgTransfer(Msg):
                 "source_channel": self.source_channel,
                 "source_port": self.source_port,
                 "token": self.coin.to_dict(),
-            }
+            },
         }
         timeout_height = self.packet_timeout_height.to_dict()
         if timeout_height:
@@ -286,7 +295,7 @@ class MsgIssueDenom(MsgNFT):
                 "name": self.name,
                 "schema": schema,
                 "sender": self.sender,
-            }
+            },
         }
         return data
 

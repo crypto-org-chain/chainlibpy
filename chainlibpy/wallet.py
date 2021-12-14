@@ -41,9 +41,7 @@ class Wallet:
 
     @property
     def public_key(self) -> bytes:
-        privkey_obj = ecdsa.SigningKey.from_string(
-            self.private_key, curve=ecdsa.SECP256k1
-        )
+        privkey_obj = ecdsa.SigningKey.from_string(self.private_key, curve=ecdsa.SECP256k1)
         pubkey_obj = privkey_obj.get_verifying_key()
         return pubkey_obj.to_string("compressed")
 

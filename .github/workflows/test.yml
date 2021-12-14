@@ -14,7 +14,8 @@ jobs:
       matrix:
         tox_env: [py37, py38, py39]
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v2
     - name: Run Tox tests
       id: test
       uses: fedora-python/tox-github-action@master

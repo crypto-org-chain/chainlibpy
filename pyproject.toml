@@ -1,5 +1,68 @@
+[tool.poetry]
+name = "chainlibpy"
+version = "2.1.0"
+description = "Tools for Crypto.org Chain wallet management and offline transaction signing"
+authors = ["chain-dev-team <chain-dev@crypto.com>"]
+license = "Apache-2.0"
+keywords = ["CRO", "blockchain", "signature", "crypto.com"]
+readme = "README.md"
+repository = "https://github.com/crypto-org-chain/chainlibpy"
+classifiers = [
+  "Intended Audience :: Developers",
+  "Topic :: Software Development :: Libraries :: Python Modules"
+]
+include = ["LICENSE"]
+exclude = ["generate_protos.sh"]
+
+[tool.poetry.dependencies]
+python = ">=3.7, <4.0"
+ecdsa = ">=0.14.0, <0.17.0"
+bech32 = "~=1.1.0"
+mnemonic = ">=0.19, <0.20"
+hdwallets = "~=0.1.0"
+grpcio-tools = "^1.42.0"
+grpcio = "^1.42.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.5"
+black = "^21.11b1"
+isort = "^5.10.1"
+mdformat = "^0.7.10"
+docformatter = "^1.4"
+tox = "^3.24.4"
+flake8 = "^4.0.1"
+mdformat-black = "^0.1.1"
+mdformat-toc = "^0.3.0"
+pytest-grpc = "^0.8.0"
+
 [build-system]
-# These are the assumed default build requirements from pip:
-# https://pip.pypa.io/en/stable/reference/pip/#pep-517-and-518-support
-requires = ["setuptools>=40.8.0", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 99
+target-version = ['py39']
+include = '\.pyi?$'
+exclude = '''
+
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+  )/
+  | foo.py           # also separately exclude a file named foo.py in
+                     # the root of the project
+)
+'''
+
+[tool.isort]
+profile = "black"
+extend_skip_glob = ["*/generated/*"]
