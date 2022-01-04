@@ -2,6 +2,11 @@
 
 This log documents all public API breaking backwards incompatible changes.
 
+## 2.2.0
+
+*Jan 5, 2022*
+[#24](https://github.com/crypto-org-chain/chainlibpy/pull/24) Fix unable to use secure gRPC channel to interact with chain
+
 *Dec 7, 2021*
 
 ## 2.1.0

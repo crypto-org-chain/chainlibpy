@@ -13,7 +13,8 @@
 - [Usage](#usage)
   - [Generating a wallet](#generating-a-wallet)
   - [Signing and broadcasting a transaction](#signing-and-broadcasting-a-transaction)
-  - [Acknowledgement](#acknowledgement)
+  - [Using secure gRPC channel](#using-secure-grpc-channel)
+- [Acknowledgement](#acknowledgement)
 - [Development](#development)
   - [Set up development environment](#set-up-development-environment)
   - [Generate gRPC code](#generate-grpc-code)
@@ -77,7 +78,11 @@ client.broadcast_tx(tx)
 
 You may also refer to `example/transaction.py` on how to use a high level function `bank_send()` to sign and broadcast a transaction
 
-### Acknowledgement<a name="acknowledgement"></a>
+### Using secure gRPC channel<a name="using-secure-grpc-channel"></a>
+
+Please refer to `example/secure_channel_example.py` on how to use secure gRPC channel with server certificate
+
+## Acknowledgement<a name="acknowledgement"></a>
 
 Thanks [cosmospy](https://github.com/hukkinj1/cosmospy) for the following:
 

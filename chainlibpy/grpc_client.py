@@ -5,7 +5,7 @@ import time
 from typing import List, Optional
 
 from google.protobuf.any_pb2 import Any as ProtoAny
-from grpc import insecure_channel
+from grpc import ChannelCredentials, insecure_channel, secure_channel
 
 from chainlibpy.generated.cosmos.auth.v1beta1.auth_pb2 import BaseAccount
 from chainlibpy.generated.cosmos.auth.v1beta1.query_pb2 import QueryAccountRequest
@@ -47,8 +47,17 @@ from chainlibpy.wallet import Wallet
 class GrpcClient:
     DEFAULT_GAS_LIMIT = 200000
 
-    def __init__(self, wallet: Wallet, chain_id: str, grpc_endpoint: str) -> None:
-        channel = insecure_channel(grpc_endpoint)
+    def __init__(
+        self,
+        wallet: Wallet,
+        chain_id: str,
+        grpc_endpoint: str,
+        credentials: ChannelCredentials = None,
+    ) -> None:
+        if credentials is None:
+            channel = insecure_channel(grpc_endpoint)
+        else:
+            channel = secure_channel(grpc_endpoint, credentials)
 
         self.bank_client = BankGrpcClient(channel)
         self.tx_client = TxGrpcClient(channel)
