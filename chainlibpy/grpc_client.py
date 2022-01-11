@@ -2,10 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import time
+from dataclasses import dataclass
 from typing import List, Optional
 
 from google.protobuf.any_pb2 import Any as ProtoAny
-from grpc import ChannelCredentials, insecure_channel, secure_channel
+from grpc import ChannelCredentials, RpcError, insecure_channel, secure_channel
 
 from chainlibpy.generated.cosmos.auth.v1beta1.auth_pb2 import BaseAccount
 from chainlibpy.generated.cosmos.auth.v1beta1.query_pb2 import QueryAccountRequest
@@ -15,6 +16,8 @@ from chainlibpy.generated.cosmos.auth.v1beta1.query_pb2_grpc import (
 from chainlibpy.generated.cosmos.bank.v1beta1.query_pb2 import (
     QueryBalanceRequest,
     QueryBalanceResponse,
+    QueryDenomMetadataRequest,
+    QueryDenomMetadataResponse,
 )
 from chainlibpy.generated.cosmos.bank.v1beta1.query_pb2_grpc import (
     QueryStub as BankGrpcClient,
@@ -44,28 +47,67 @@ from chainlibpy.transaction import sign_transaction
 from chainlibpy.wallet import Wallet
 
 
+@dataclass
+class NetworkConfig:
+    grpc_endpoint: str
+    chain_id: str
+    address_prefix: str
+    coin_denom: str
+    coin_base_denom: str
+    derivation_path: str
+
+
+CRO_NETWORK = {
+    "mainnet": NetworkConfig(
+        grpc_endpoint="mainnet.crypto.org:9090",
+        chain_id="crypto-org-chain-mainnet-1",
+        address_prefix="cro",
+        coin_denom="cro",
+        coin_base_denom="basecro",
+        derivation_path="m/44'/394'/0'/0/0",
+    ),
+    "testnet_croeseid": NetworkConfig(
+        grpc_endpoint="testnet-croeseid-4.crypto.org:9090",
+        chain_id="testnet-croeseid-4",
+        address_prefix="tcro",
+        coin_denom="tcro",
+        coin_base_denom="basetcro",
+        derivation_path="m/44'/1'/0'/0/0",
+    ),
+}
+
+
 class GrpcClient:
     DEFAULT_GAS_LIMIT = 200000
 
     def __init__(
         self,
         wallet: Wallet,
-        chain_id: str,
-        grpc_endpoint: str,
+        network: NetworkConfig,
         credentials: ChannelCredentials = None,
     ) -> None:
         if credentials is None:
-            channel = insecure_channel(grpc_endpoint)
+            channel = insecure_channel(network.grpc_endpoint)
         else:
-            channel = secure_channel(grpc_endpoint, credentials)
+            channel = secure_channel(network.grpc_endpoint, credentials)
 
         self.bank_client = BankGrpcClient(channel)
         self.tx_client = TxGrpcClient(channel)
         self.auth_client = AuthGrpcClient(channel)
         self.wallet = wallet
-        self.chain_id = chain_id
-        account = self.query_account_data(self.wallet.address)
-        self.account_number = account.account_number
+        self.chain_id = network.chain_id
+
+        # TODO to remove when removing wallet parameter from this class
+        try:
+            account = self.query_account_data(self.wallet.address)
+            self.account_number = account.account_number
+        except RpcError:
+            # TODO dummy code, to remove when removing wallet parameter from this class
+            self.account_number = 0
+
+    def query_bank_denom_metadata(self, denom: str) -> QueryDenomMetadataResponse:
+        res = self.bank_client.DenomMetadata(QueryDenomMetadataRequest(denom=denom))
+        return res
 
     def get_balance(self, address: str, denom: str) -> QueryBalanceResponse:
         res = self.bank_client.Balance(QueryBalanceRequest(address=address, denom=denom))
