@@ -1,0 +1,23 @@
+chaintest:
+  validators:
+    - coins: 10cro
+      staked: 10cro
+    - coins: 10cro
+      staked: 10cro
+  accounts:
+    - name: community
+      coins: 100cro
+    - name: ecosystem
+      coins: 200cro
+    - name: reserve
+      coins: 200cro
+      vesting: "60s"
+    - name: alice
+      coins: 5000cro
+    - name: bob
+      coins: 5000cro
+  genesis:
+    app_state:
+      staking:
+        params:
+          unbonding_time: "10s"

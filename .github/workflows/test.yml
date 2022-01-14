@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        tox_env: [py37, py38, py39]
+        tox_env: [py38, py39]
     steps:
     - name: Checkout
       uses: actions/checkout@v2

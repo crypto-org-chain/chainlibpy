@@ -125,13 +125,13 @@ $COSMOS_SDK_DIR/proto/cosmos/auth/v1beta1/auth.proto
 ### Tox<a name="tox"></a>
 
 ```
-pyenv local 3.7.a 3.8.b 3.9.c
+pyenv local 3.8.a 3.9.b
 ```
 
-`a`, `b` and `c` is python versions installed on your computer by `pyenv`. More about [pyenv](https://github.com/pyenv/pyenv).
+`a` and `b` are python versions installed on your computer by `pyenv`. More about [pyenv](https://github.com/pyenv/pyenv).
 
-After this command, a `.python-version` file will be generated at project root directory, which means python versions inside `.python-version` are presented for this project. So running `tox` command with `py{37,38,39}` configuration should succeed.\
-Then run to verify. This command is recommended to run before pushing a commit.
+After this command, a `.python-version` file will be generated at project root directory, which means python versions inside `.python-version` are presented for this project. So running `tox` command with `py{38,39}` configuration should succeed.\
+Then run to verify. Command below is recommended to run before pushing a commit.
 
 ```sh
 poetry run tox
