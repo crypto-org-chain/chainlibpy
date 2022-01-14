@@ -4,7 +4,7 @@ This log documents all public API breaking backwards incompatible changes.
 
 ## 2.2.0
 
-*Jan 5, 2022*
+[#25](https://github.com/crypto-org-chain/chainlibpy/issues/25) Add mainnet and testnet-croeseid-4 network configurations
 [#24](https://github.com/crypto-org-chain/chainlibpy/pull/24) Fix unable to use secure gRPC channel to interact with chain
 
 *Dec 7, 2021*
