@@ -1,0 +1,17 @@
+chain_id_test:
+  validators:
+    - coins: 10000cro
+      staked: 1000cro
+    - coins: 1000cro
+      staked: 1000cro
+  accounts:
+    - name: msigner0
+      coins: 2000cro
+    - name: msigner1
+      coins: 2000cro
+    - name: msigner2
+      coins: 2000cro
+  app_state:
+    staking:
+      params:
+        unbonding_time: "10s"
