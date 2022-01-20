@@ -65,12 +65,12 @@ CHAIN_ID = "chainmaind"
 GRPC_ENDPOINT = "0.0.0.0:26653"
 
 wallet = Wallet(MNEMONIC_PHRASE)
-client = GrpcClient(wallet, CHAIN_ID, GRPC_ENDPOINT)
+client = GrpcClient(CHAIN_ID, DENOM, GRPC_ENDPOINT)
 
 from_address = wallet.address
 account_number = client.query_account_data(wallet.address).account_number
 
-msg = client.get_packed_send_msg(wallet.address, TO_ADDRESS, AMOUNT)
+msg = get_packed_send_msg(wallet.address, TO_ADDRESS, AMOUNT)
 tx = client.generate_tx([msg], [wallet.address], [wallet.public_key])
 sign_transaction(tx, wallet.private_key, CHAIN_ID, account_number)
 client.broadcast_tx(tx)

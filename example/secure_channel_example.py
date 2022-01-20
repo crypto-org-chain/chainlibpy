@@ -30,10 +30,10 @@ def example_with_certificate_file():
     with open("./cert.crt", "rb") as f:
         creds = grpc.ssl_channel_credentials(f.read())
 
-    client = GrpcClient(wallet, CHAIN_ID, GRPC_ENDPOINT, creds)
+    client = GrpcClient(CHAIN_ID, DENOM, GRPC_ENDPOINT, creds)
 
     from_address = wallet.address
-    res = client.get_balance(from_address, DENOM)
+    res = client.get_balance(from_address)
     print(f"address {from_address} initial balance: {res.balance.amount}")
 
 
@@ -48,10 +48,10 @@ def example_with_certificate_request():
     certificate = ssl.DER_cert_to_PEM_cert(sock.getpeercert(True))
     creds = grpc.ssl_channel_credentials(str.encode(certificate))
 
-    client = GrpcClient(wallet, CHAIN_ID, GRPC_ENDPOINT, creds)
+    client = GrpcClient(CHAIN_ID, DENOM, GRPC_ENDPOINT, creds)
 
     from_address = wallet.address
-    res = client.get_balance(from_address, DENOM)
+    res = client.get_balance(from_address)
     print(f"address {from_address} initial balance: {res.balance.amount}")
 
 

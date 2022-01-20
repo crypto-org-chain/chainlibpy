@@ -10,6 +10,7 @@ from chainlibpy.amino.message import Msg
 from chainlibpy.amino.tx import Pubkey, Signature, StdTx
 from chainlibpy.wallet import Wallet
 
+
 class Transaction:
     """A Cosmos transaction.
 
@@ -60,10 +61,12 @@ class Transaction:
         pubkey = self._wallet.public_key
         base64_pubkey = base64.b64encode(pubkey).decode("utf-8")
         pubkey = Pubkey(value=base64_pubkey)
-        signature = Signature(self._sign(), pubkey, self._account_num, self._sequence)
+        raw_signature = self.sign()
+        sig_str = base64.b64encode(raw_signature).decode("utf-8")
+        signature = Signature(sig_str, pubkey, self._account_num, self._sequence)
         return signature
 
-    def _sign(self) -> str:
+    def sign(self) -> bytes:
         sign_doc = self._get_sign_doc()
         message_str = json.dumps(
             sign_doc.to_dict(), separators=(",", ":"), sort_keys=True
@@ -78,10 +81,7 @@ class Transaction:
             hashfunc=hashlib.sha256,
             sigencode=ecdsa.util.sigencode_string_canonize,
         )
-
-        print(list(signature_compact))
-        signature_base64_str = base64.b64encode(signature_compact).decode("utf-8")
-        return signature_base64_str
+        return signature_compact
 
     def _get_sign_doc(self) -> StdSignDoc:
         sign_doc = StdSignDoc(
