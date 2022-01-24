@@ -70,5 +70,6 @@ def local_test_network_config(data_folder: "Path", chain_id):
         address_prefix="cro",
         coin_denom="cro",
         coin_base_denom="basecro",
+        exponent=8,
         derivation_path="m/44'/394'/0'/0/0",
     )

@@ -54,6 +54,7 @@ class NetworkConfig:
     address_prefix: str
     coin_denom: str
     coin_base_denom: str
+    exponent: int
     derivation_path: str
 
 
@@ -64,6 +65,7 @@ CRO_NETWORK = {
         address_prefix="cro",
         coin_denom="cro",
         coin_base_denom="basecro",
+        exponent=8,
         derivation_path="m/44'/394'/0'/0/0",
     ),
     "testnet_croeseid": NetworkConfig(
@@ -72,6 +74,7 @@ CRO_NETWORK = {
         address_prefix="tcro",
         coin_denom="tcro",
         coin_base_denom="basetcro",
+        exponent=8,
         derivation_path="m/44'/1'/0'/0/0",
     ),
 }
