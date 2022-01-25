@@ -111,3 +111,6 @@ tester.py
 
 # vscode
 .vscode/
+
+# crypto.org chain binary
+chain-maind
