@@ -2,13 +2,12 @@
 # -*- coding: utf-8 -*-
 
 from chainlibpy.generated.cosmos.base.v1beta1.coin_pb2 import Coin
-from chainlibpy.grpc_client import GrpcClient
+from chainlibpy.grpc_client import GrpcClient, NetworkConfig
 from chainlibpy.wallet import Wallet
 
 # NOTE:
 # Recommend to use pystarport(https://pypi.org/project/pystarport/) to setup a testnet locally
 
-DENOM = "basecro"
 # Obtained from {directory_started_pystarport}/data/chainmaind/accounts.json
 # To recover one of the genesis account
 # MNEMONIC_PHRASE = "first ... last"
@@ -18,20 +17,26 @@ MNEMONIC_PHRASE = "hurry exist clerk safe aware anchor brush run dentist come su
 TO_ADDRESS = "cro1hk220qwxp0c8m3pzazardmmfv8y0mg7ukdnn37"
 AMOUNT = [Coin(amount="10000", denom=DENOM)]
 # Obtained from {directory_started_pystarport}/data/chainmaind/genesis.json
-CHAIN_ID = "chain_id_test"
 # Obtained from {directory_started_pystarport}/data/chainmaind/nodex/config/app.toml
 # Look for "gRPC Configuration" section
-GRPC_ENDPOINT = "0.0.0.0:26653"
 
 
 def main():
     wallet = Wallet(MNEMONIC_PHRASE)
-    client = GrpcClient(CHAIN_ID, DENOM, GRPC_ENDPOINT)
+    config = NetworkConfig(
+        grpc_endpoint="0.0.0.0:26653",
+        chain_id="chain_id_test",
+        address_prefix="cro",
+        coin_denom="cro",
+        coin_base_denom="basecro",
+        derivation_path="m/44'/394'/0'/0/0",
+    )
+    client = GrpcClient(config)
 
     from_address = wallet.address
     res = client.get_balance(from_address)
     print(f"from_address initial balance: {res.balance.amount}")
-    # res = client.get_balance(TO_ADDRESS, DENOM)
+    # res = client.get_balance(TO_ADDRESS)
     # print(f"to_address initial balance: {res.balance.amount}")
     client.bank_send(wallet.address, wallet.private_key, wallet.public_key, TO_ADDRESS, AMOUNT)
 

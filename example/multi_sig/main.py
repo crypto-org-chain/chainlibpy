@@ -14,7 +14,12 @@ from chainlibpy.amino.transaction import Transaction
 from chainlibpy.generated.cosmos.base.v1beta1.coin_pb2 import Coin as ProtoCoin
 from chainlibpy.generated.cosmos.crypto.multisig.keys_pb2 import LegacyAminoPubKey
 from chainlibpy.generated.cosmos.crypto.secp256k1.keys_pb2 import PubKey as ProtoPubKey
-from chainlibpy.grpc_client import GrpcClient, gen_multi_tx, get_packed_send_msg
+from chainlibpy.grpc_client import (
+    GrpcClient,
+    NetworkConfig,
+    gen_multi_tx,
+    get_packed_send_msg,
+)
 from chainlibpy.multisign.signature import SingleSignatureV2
 from chainlibpy.wallet import Wallet
 
@@ -139,12 +144,21 @@ def main():
     # multi_wallet_addr = get_multi_addr(multi_wallet_name)
     # account_num, sequence = chain_maind_client.get_account_info(multi_wallet_addr)
 
-    grpc_client = GrpcClient(chain_id, "basecro", "0.0.0.0:26653", None)
+    config = NetworkConfig(
+        grpc_endpoint="0.0.0.0:26653",
+        chain_id=chain_id,
+        address_prefix="cro",
+        coin_denom="cro",
+        coin_base_denom="basecro",
+        derivation_path="m/44'/394'/0'/0/0",
+    )
+
+    grpc_client = GrpcClient(config)
     res = grpc_client.get_balance(multi_address)
     print(f"get multi address balance: {res.balance.amount}")
     account_info = grpc_client.query_account_data(multi_address)
-    account_num = account_info.account_num
-    sequence = account_info
+    account_num = account_info.account_number
+    sequence = account_info.sequence
     print(f"account_num {account_num}, sequence: {sequence}")
     # account_num, sequence = 12, 0
 

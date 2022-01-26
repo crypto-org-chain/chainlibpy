@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from typing import List, Optional
 
 from google.protobuf.any_pb2 import Any as ProtoAny
-from grpc import ChannelCredentials, RpcError, insecure_channel, secure_channel
+from grpc import ChannelCredentials, insecure_channel, secure_channel
 
 from chainlibpy.generated.cosmos.auth.v1beta1.auth_pb2 import BaseAccount
 from chainlibpy.generated.cosmos.auth.v1beta1.query_pb2 import QueryAccountRequest
@@ -97,7 +97,7 @@ CRO_NETWORK = {
         coin_base_denom="basecro",
         derivation_path="m/44'/394'/0'/0/0",
     ),
-    "testnet_croeseid": NetworkConfig(
+    "testnet": NetworkConfig(
         grpc_endpoint="testnet-croeseid-4.crypto.org:9090",
         chain_id="testnet-croeseid-4",
         address_prefix="tcro",
@@ -113,27 +113,25 @@ class GrpcClient:
 
     def __init__(
         self,
-        network: NetworkConfig,
-        account_number: int = None,
+        network_config: NetworkConfig,
         credentials: ChannelCredentials = None,
     ) -> None:
         if credentials is None:
-            channel = insecure_channel(network.grpc_endpoint)
+            channel = insecure_channel(network_config.grpc_endpoint)
         else:
-            channel = secure_channel(network.grpc_endpoint, credentials)
+            channel = secure_channel(network_config.grpc_endpoint, credentials)
 
         self.bank_client = BankGrpcClient(channel)
         self.tx_client = TxGrpcClient(channel)
         self.auth_client = AuthGrpcClient(channel)
-        self.chain_id = network.chain_id
-        self.account_number = account_number
+        self.network_config = network_config
 
     def query_bank_denom_metadata(self) -> QueryDenomMetadataResponse:
-        res = self.bank_client.DenomMetadata(QueryDenomMetadataRequest(denom=self.network.coin_base_denom))
+        res = self.bank_client.DenomMetadata(QueryDenomMetadataRequest(denom=self.network_config.coin_base_denom))
         return res
 
-    def get_balance(self, address: str, denom: str) -> QueryBalanceResponse:
-        res = self.bank_client.Balance(QueryBalanceRequest(address=address, denom=denom))
+    def get_balance(self, address: str) -> QueryBalanceResponse:
+        res = self.bank_client.Balance(QueryBalanceRequest(address=address, denom=self.network_config.coin_base_denom))
         return res
 
     def query_account_data(self, address: str) -> BaseAccount:
@@ -174,7 +172,7 @@ class GrpcClient:
         return tx
 
     def sign_tx(self, private_key: bytes, tx: Tx, account_number):
-        sign_transaction(tx, private_key, self.chain_id, account_number)
+        sign_transaction(tx, private_key, self.network_config.chain_id, account_number)
 
     def broadcast_tx(self, tx: Tx, wait_time: int = 10) -> GetTxResponse:
         tx_data = tx.SerializeToString()

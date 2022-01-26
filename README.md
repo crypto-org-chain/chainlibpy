@@ -52,7 +52,7 @@ print(wallet.address)
 
 ```python
 from chainlibpy.generated.cosmos.base.v1beta1.coin_pb2 import Coin
-from chainlibpy.grpc_client import GrpcClient
+from chainlibpy.grpc_client import GrpcClient, CRO_NETWORK, get_packed_send_msg
 from chainlibpy.transaction import sign_transaction
 from chainlibpy.wallet import Wallet
 
@@ -61,18 +61,18 @@ DENOM = "basecro"
 MNEMONIC_PHRASE = "first ... last"
 TO_ADDRESS = "cro...add"
 AMOUNT = [Coin(amount="10000", denom=DENOM)]
-CHAIN_ID = "chainmaind"
-GRPC_ENDPOINT = "0.0.0.0:26653"
 
 wallet = Wallet(MNEMONIC_PHRASE)
-client = GrpcClient(CHAIN_ID, DENOM, GRPC_ENDPOINT)
+
+config = CRO_NETWORK["mainnet"]
+client = GrpcClient(config)
 
 from_address = wallet.address
 account_number = client.query_account_data(wallet.address).account_number
 
 msg = get_packed_send_msg(wallet.address, TO_ADDRESS, AMOUNT)
 tx = client.generate_tx([msg], [wallet.address], [wallet.public_key])
-sign_transaction(tx, wallet.private_key, CHAIN_ID, account_number)
+sign_transaction(tx, wallet.private_key, config.chain_id, account_number)
 client.broadcast_tx(tx)
 ```
 
