@@ -24,7 +24,7 @@
 
 ## Installing<a name="installing"></a>
 
-Require Python >= 3.7, installing from PyPI repository (https://pypi.org/project/chainlibpy):
+Require Python >= 3.8, installing from [PyPI repository](https://pypi.org/project/chainlibpy):
 
 ```bash
 pip install chainlibpy
@@ -84,11 +84,15 @@ Please refer to `example/secure_channel_example.py` on how to use secure gRPC ch
 
 ## Acknowledgement<a name="acknowledgement"></a>
 
-Thanks [cosmospy](https://github.com/hukkinj1/cosmospy) for the following:
+Thanks to [cosmospy](https://github.com/hukkinj1/cosmospy) for the following:
 
 - referenced the packages to sign transaction and create hd wallet
 - python lint config file
 - use same sign method
+
+Thanks to [eth-utils](https://github.com/ethereum/eth-utils) for the following:
+
+- Conversion of different units without facing precision issues in Python
 
 ## Development<a name="development"></a>
 
@@ -96,20 +100,20 @@ Thanks [cosmospy](https://github.com/hukkinj1/cosmospy) for the following:
 
 More about [poetry](https://python-poetry.org/docs/).
 
-```
+```bash
 poetry install
 ```
 
 ### Generate gRPC code<a name="generate-grpc-code"></a>
 
-```
+```bash
 poetry shell
 ./generated_protos.sh
 ```
 
 **NOTE:** By default, `master` branch of `cosmos-sdk` is used. Use command below to download a different version:
 
-```
+```bash
 ./generated_protos.sh -COSMOS_REF=v0.44.5
 ```
 
@@ -124,7 +128,7 @@ $COSMOS_SDK_DIR/proto/cosmos/auth/v1beta1/auth.proto
 
 ### Tox<a name="tox"></a>
 
-```
+```bash
 pyenv local 3.8.a 3.9.b
 ```
 
@@ -133,7 +137,7 @@ pyenv local 3.8.a 3.9.b
 After this command, a `.python-version` file will be generated at project root directory, which means python versions inside `.python-version` are presented for this project. So running `tox` command with `py{38,39}` configuration should succeed.\
 Then run to verify. Command below is recommended to run before pushing a commit.
 
-```sh
+```bash
 poetry run tox
 # or
 poetry shell

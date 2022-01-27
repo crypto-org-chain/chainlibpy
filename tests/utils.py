@@ -16,6 +16,9 @@ from pystarport.ports import grpc_port, rpc_port
 ALICE = "alice"
 BOB = "bob"
 
+CRO_DENOM = "cro"
+BASECRO_DENOM = "basecro"
+
 
 def wait_for_block(cli, height, timeout=240):
     for _ in range(timeout * 2):
