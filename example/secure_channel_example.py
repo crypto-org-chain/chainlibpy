@@ -5,54 +5,36 @@ import ssl
 
 import grpc
 
-from chainlibpy.grpc_client import GrpcClient
-from chainlibpy.wallet import Wallet
-
-DENOM = "basetcro"
-MNEMONIC_PHRASE = "first ... last"
-CHAIN_ID = "testnet-croeseid-4"
-
-SERVER_HOST = "testnet-croeseid-4.crypto.org"
-SERVER_PORT = "9090"
-GRPC_ENDPOINT = f"{SERVER_HOST}:{SERVER_PORT}"
-
-DEFAULT_DERIVATION_PATH = "m/44'/1'/0'/0/0"
-DEFAULT_BECH32_HRP = "tcro"
+from chainlibpy import CRO_NETWORK, GrpcClient
 
 
 def example_with_certificate_file():
-    wallet = Wallet(MNEMONIC_PHRASE, DEFAULT_DERIVATION_PATH, DEFAULT_BECH32_HRP)
-
     # 1. .cer certificate file could be obtained from the browser
     #    more details could be found here https://stackoverflow.com/questions/25940396/how-to-export-certificate-from-chrome-on-a-mac/59466184#59466184 # noqa501
     # 2. convert .cer file to .crt file
-    #    `openssl x509 -inform DER -in cert.cer -out cert.crt``
+    #    `openssl x509 -inform DER -in cert.cer -out cert.crt`
     with open("./cert.crt", "rb") as f:
         creds = grpc.ssl_channel_credentials(f.read())
 
-    client = GrpcClient(wallet, CHAIN_ID, GRPC_ENDPOINT, creds)
+    client = GrpcClient(CRO_NETWORK["testnet_croeseid"], creds)
 
-    from_address = wallet.address
-    res = client.get_balance(from_address, DENOM)
-    print(f"address {from_address} initial balance: {res.balance.amount}")
+    print(client.query_bank_denom_metadata(CRO_NETWORK["testnet_croeseid"].coin_base_denom))
 
 
 def example_with_certificate_request():
-    wallet = Wallet(MNEMONIC_PHRASE, DEFAULT_DERIVATION_PATH, DEFAULT_BECH32_HRP)
+    (server_host, server_port) = CRO_NETWORK["testnet_croeseid"].grpc_endpoint.split(":")
 
     # if server does not use Server Name Indication (SNI), commented code below is enough:
     # creds = ssl.get_server_certificate((SERVER_HOST, SERVER_PORT))
-    conn = ssl.create_connection((SERVER_HOST, SERVER_PORT))
+    conn = ssl.create_connection((server_host, server_port))
     context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
-    sock = context.wrap_socket(conn, server_hostname=SERVER_HOST)
+    sock = context.wrap_socket(conn, server_hostname=server_host)
     certificate = ssl.DER_cert_to_PEM_cert(sock.getpeercert(True))
     creds = grpc.ssl_channel_credentials(str.encode(certificate))
 
-    client = GrpcClient(wallet, CHAIN_ID, GRPC_ENDPOINT, creds)
+    client = GrpcClient(CRO_NETWORK["testnet_croeseid"], creds)
 
-    from_address = wallet.address
-    res = client.get_balance(from_address, DENOM)
-    print(f"address {from_address} initial balance: {res.balance.amount}")
+    print(client.query_bank_denom_metadata(CRO_NETWORK["testnet_croeseid"].coin_base_denom))
 
 
 if __name__ == "__main__":
