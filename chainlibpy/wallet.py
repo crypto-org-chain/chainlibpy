@@ -52,3 +52,26 @@ class Wallet:
         five_bit_r = bech32.convertbits(r, 8, 5)
         assert five_bit_r is not None, "Unsuccessful bech32.convertbits call"
         return bech32.bech32_encode(self.hrp, five_bit_r)
+
+    def sign(self, msg: bytes) -> bytes:
+        """Sign the input msg with wallet's private key.
+
+        Args:
+            msg (bytes): msg to be signed,
+            use `.SerializeToString()` method to the original protobuf message type
+
+        Returns:
+            bytes: signature of the input msg
+
+        Raises:
+            AssertionError: Incorrect msg type
+        """
+        assert isinstance(msg, bytes), "Wrong Type"
+
+        signing_key = ecdsa.SigningKey.from_string(
+            self.private_key, curve=ecdsa.SECP256k1, hashfunc=hashlib.sha256
+        )
+
+        return signing_key.sign_deterministic(
+            msg, sigencode=ecdsa.util.sigencode_string_canonize, hashfunc=hashlib.sha256
+        )

@@ -38,6 +38,7 @@ class CROCoin:
         self._base_denom = network_config.coin_base_denom
         self._exponent = network_config.exponent
         self._unit = unit
+        self._network_config = network_config
         self.amount_base = amount
 
     @property
@@ -169,6 +170,43 @@ class CROCoin:
 
         return self._cast_to_str(result_value)
 
-    def to_coin_message(self) -> "Coin":
+    @property
+    def protobuf_coin_message(self) -> "Coin":
         """Returns protobuf compatiable Coin message."""
-        return Coin(amount=self.base_amount, denom=self._base_denom)
+        return Coin(amount=self.amount_base, denom=self._base_denom)
+
+    def plus(self, coin: "CROCoin") -> "CROCoin":
+        """Add a coin amount to this coin.
+
+        Args:
+            coin (CROCoin): CROCoin to be added
+
+        Returns:
+            CroCoin: Sum of two CROCoin object
+
+        Raises:
+            ValueError: Sum is greater than `MAX_CRO_SUPPLY`
+        """
+        with decimal.localcontext() as ctx:
+            ctx.prec = 999
+            result_value = decimal.Decimal(self.amount_base) + decimal.Decimal(coin.amount_base)
+
+        return type(self)(result_value, self._base_denom, self._network_config)
+
+    def minus(self, coin: "CROCoin") -> "CROCoin":
+        """Subtract a coin amount from this coin.
+
+        Args:
+            coin (CROCoin): CROCoin to be subtracted
+
+        Returns:
+            CroCoin: Difference after subtracting the coin amount
+
+        Raises:
+            ValueError: Difference is less than 0
+        """
+        with decimal.localcontext() as ctx:
+            ctx.prec = 999
+            result_value = decimal.Decimal(self.amount_base) - decimal.Decimal(coin.amount_base)
+
+        return type(self)(result_value, self._base_denom, self._network_config)
