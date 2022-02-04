@@ -82,7 +82,7 @@ Thanks to [eth-utils](https://github.com/ethereum/eth-utils) for the following:
 
 ### Set up development environment<a name="set-up-development-environment"></a>
 
-More about [poetry](https://python-poetry.org/docs/).
+Run command below to install dependencies (more about [poetry](https://python-poetry.org/docs/)):
 
 ```bash
 poetry install
@@ -101,27 +101,31 @@ poetry shell
 ./generated_protos.sh -COSMOS_REF=v0.44.5
 ```
 
-If more generated gRPC code is needed in the future, please add the `.proto` files needed here in `generated_protos.sh`:
+If more generated gRPC code is needed in the future, please add the path to `.proto` file needed here in `generated_protos.sh`:
 
 ```diff
 # Add .proto files here to generate respective gRPC code
 PROTO_FILES="
 $COSMOS_SDK_DIR/proto/cosmos/auth/v1beta1/auth.proto
-+$COSMOS_SDK_DIR/proto/cosmos/other.proto
++$COSMOS_SDK_DIR/proto/other.proto
 ...
 ```
 
 ### Tox<a name="tox"></a>
 
+[Tox](https://tox.wiki/en/latest/) is a tool to automate and standardize testing processes in Python.
+
+For this project, the list of environment that will be run when invoking `tox` command is `py{38,39}`. Hence we need to set up Python 3.8 and 3.9 for this project. Run command below to set a local application-specific Python version (in this case 3.8 and 3.9) with [pyenv](https://github.com/pyenv/pyenv):
+
 ```bash
 pyenv local 3.8.a 3.9.b
 ```
 
-`a` and `b` are python versions installed on your computer by `pyenv`. More about [pyenv](https://github.com/pyenv/pyenv).
+**Note:** `a` and `b` are python versions installed on your computer by `pyenv`.
 
-After this command, a `.python-version` file will be generated at project root directory, which means python versions inside `.python-version` are presented for this project. So running `tox` command with `py{38,39}` configuration should succeed.
+After running command above, a `.python-version` file will be generated, which means python versions inside `.python-version` are presented for this project. Now, running command `tox` should succeed without prompting environment missing error.
 
-Then run to verify. Command below is recommended to run before pushing a commit.
+Run command below to verify:
 
 ```bash
 poetry run tox
@@ -129,3 +133,5 @@ poetry run tox
 poetry shell
 tox
 ```
+
+It is also recommended to run `tox` command before pushing a commit.
