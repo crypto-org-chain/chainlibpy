@@ -36,7 +36,7 @@ class Transaction:
         gas_limit: int = DEFAULT_GAS_LIMIT,
         fee: Optional[List[Coin]] = None,
         memo: str = "",
-        timeout_height: int = None,
+        timeout_height: Optional[int] = None,
     ) -> None:
         """Transaction class to prepare unsigned transaction and generate
         signed transaction with signatures.
@@ -86,7 +86,7 @@ class Transaction:
         Returns:
             Transaction: transaction object with newly added messages
         """
-        self._packed_msgs.extend(self._pack_msgs_to_any_msgs(msgs))
+        self._packed_msgs.extend(self._pack_msgs_to_any_msgs(list(msgs)))
 
         return self
 
@@ -124,5 +124,5 @@ class Transaction:
             account_number=self._account_number,
         )
 
-    def get_signed_tx(self, signatures: bytes) -> Tx:
+    def get_signed_tx(self, signatures: List[bytes]) -> Tx:
         return Tx(body=self.get_tx_body(), auth_info=self.get_auth_info(), signatures=signatures)

@@ -1,3 +1,4 @@
+import socket
 import ssl
 
 import grpc
@@ -20,12 +21,16 @@ from .utils import ALICE, BOB, CRO_DENOM, get_blockchain_account_info
 def test_network_config(network_config: "NetworkConfig"):
     (server_host, server_port) = network_config.grpc_endpoint.split(":")
 
-    conn = ssl.create_connection((server_host, server_port))
     context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
-    sock = context.wrap_socket(conn, server_hostname=server_host)
-    certificate = ssl.DER_cert_to_PEM_cert(sock.getpeercert(True))
-    creds = grpc.ssl_channel_credentials(str.encode(certificate))
+    with socket.create_connection((server_host, int(server_port))) as sock:
+        with context.wrap_socket(sock, server_hostname=server_host) as ssock:
+            certificate_DER = ssock.getpeercert(True)
 
+    if certificate_DER is None:
+        pytest.fail("no certificate returned from server")
+
+    certificate_PEM = ssl.DER_cert_to_PEM_cert(certificate_DER)
+    creds = grpc.ssl_channel_credentials(str.encode(certificate_PEM))
     client = GrpcClient(network_config, creds)
 
     assert (

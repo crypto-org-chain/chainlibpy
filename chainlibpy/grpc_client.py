@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from dataclasses import dataclass
+from typing import Optional
 
 from grpc import ChannelCredentials, insecure_channel, secure_channel
 
@@ -65,7 +66,7 @@ class GrpcClient:
     def __init__(
         self,
         network: NetworkConfig,
-        credentials: ChannelCredentials = None,
+        credentials: Optional[ChannelCredentials] = None,
     ) -> None:
         if credentials is None:
             channel = insecure_channel(network.grpc_endpoint)

@@ -17,6 +17,7 @@
 - [Acknowledgement](#acknowledgement)
 - [Development](#development)
   - [Set up development environment](#set-up-development-environment)
+  - [Add pre-commit git hook](#add-pre-commit-git-hook)
   - [Generate gRPC code](#generate-grpc-code)
   - [Tox](#tox)
 
@@ -86,6 +87,14 @@ Run command below to install dependencies (more about [poetry](https://python-po
 
 ```bash
 poetry install
+```
+
+### Add pre-commit git hook<a name="add-pre-commit-git-hook"></a>
+
+To set up the git hook scripts, so that [`pre-commit`](https://pre-commit.com/) will run automatically on `git commit`:
+
+```bash
+pre-commit install
 ```
 
 ### Generate gRPC code<a name="generate-grpc-code"></a>

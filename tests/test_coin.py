@@ -160,7 +160,7 @@ def test_crocoin_with_wrong_unit_should_raise_exception(
 ):
     with pytest.raises(
         AssertionError,
-        match=f"unit should be {local_test_network_config.coin_denom} or {local_test_network_config.coin_base_denom}, got {wrong_unit}",  # noqa 501
+        match=f"unit should be {local_test_network_config.coin_denom} or {local_test_network_config.coin_base_denom}, got {wrong_unit}",  # noqa: 501
     ):
         CROCoin(amount, wrong_unit, local_test_network_config)
 
@@ -188,7 +188,7 @@ def test_crocoin_beyond_max_supply_should_raise_exception(
 
     with pytest.raises(
         ValueError,
-        match=rf"^Input is more than maximum cro supply .* got {invalid_amount_base}basecro$",  # noqa 501
+        match=rf"^Input is more than maximum cro supply .* got {invalid_amount_base}basecro$",  # noqa: 501
     ):
         CROCoin(invalid_amount, unit, local_test_network_config)
 

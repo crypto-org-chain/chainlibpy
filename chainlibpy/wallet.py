@@ -13,13 +13,15 @@ DEFAULT_BECH32_HRP = "cro"
 
 
 class Wallet:
-    def __init__(self, seed: str, path=DEFAULT_DERIVATION_PATH, hrp=DEFAULT_BECH32_HRP):
+    def __init__(
+        self, seed: str, path: str = DEFAULT_DERIVATION_PATH, hrp: str = DEFAULT_BECH32_HRP
+    ):
         self.seed = seed
         self.path = path
         self.hrp = hrp
 
     @classmethod
-    def new(cls, path=DEFAULT_DERIVATION_PATH, hrp=DEFAULT_BECH32_HRP):
+    def new(cls, path: str = DEFAULT_DERIVATION_PATH, hrp: str = DEFAULT_BECH32_HRP) -> "Wallet":
         seed = Mnemonic(language="english").generate(strength=256)
         return Wallet(seed, path, hrp)
 
