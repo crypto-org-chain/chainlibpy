@@ -72,11 +72,10 @@ def test_send_cro(blockchain_accounts, local_test_network_config: "NetworkConfig
         client=client,
     )
 
-    sign_doc = tx.get_sign_doc()
-    signature_alice = alice_wallet.sign(sign_doc.SerializeToString())
-    signed_tx = tx.get_signed_tx([signature_alice])
+    signature_alice = alice_wallet.sign(tx.sign_doc.SerializeToString())
+    signed_tx = tx.set_signatures(signature_alice).signed_tx
 
-    client.broadcast_transaction_block_mode(signed_tx.SerializeToString())
+    client.broadcast_transaction(signed_tx.SerializeToString())
 
     alice_bal_aft = client.query_account_balance(alice_wallet.address)
     bob_bal_aft = client.query_account_balance(bob_wallet.address)
@@ -87,8 +86,8 @@ def test_send_cro(blockchain_accounts, local_test_network_config: "NetworkConfig
         bob_bal_aft.balance.amount, bob_bal_aft.balance.denom, local_test_network_config
     )
 
-    assert alice_coin_aft == alice_coin_init.minus(ten_cro).minus(one_cro_fee)
-    assert bob_coin_aft == bob_coin_init.plus(ten_cro)
+    assert alice_coin_aft == alice_coin_init - ten_cro - one_cro_fee
+    assert bob_coin_aft == bob_coin_init + ten_cro
 
 
 def test_2_msgs_in_1_tx(blockchain_accounts, local_test_network_config: "NetworkConfig"):
@@ -130,11 +129,10 @@ def test_2_msgs_in_1_tx(blockchain_accounts, local_test_network_config: "Network
         client=client,
     ).append_message(msg_send_20_cro)
 
-    sign_doc = tx.get_sign_doc()
-    signature_alice = alice_wallet.sign(sign_doc.SerializeToString())
-    signed_tx = tx.get_signed_tx([signature_alice])
+    signature_alice = alice_wallet.sign(tx.sign_doc.SerializeToString())
+    signed_tx = tx.set_signatures(signature_alice).signed_tx
 
-    client.broadcast_transaction_block_mode(signed_tx.SerializeToString())
+    client.broadcast_transaction(signed_tx.SerializeToString())
 
     alice_bal_aft = client.query_account_balance(alice_wallet.address)
     bob_bal_aft = client.query_account_balance(bob_wallet.address)
@@ -145,5 +143,5 @@ def test_2_msgs_in_1_tx(blockchain_accounts, local_test_network_config: "Network
         bob_bal_aft.balance.amount, bob_bal_aft.balance.denom, local_test_network_config
     )
 
-    assert alice_coin_aft == alice_coin_init.minus(ten_cro).minus(twnenty_cro).minus(one_cro_fee)
-    assert bob_coin_aft == bob_coin_init.plus(ten_cro).plus(twnenty_cro)
+    assert alice_coin_aft == alice_coin_init - ten_cro - twnenty_cro - one_cro_fee
+    assert bob_coin_aft == bob_coin_init + ten_cro + twnenty_cro

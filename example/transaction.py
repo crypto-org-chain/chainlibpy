@@ -73,11 +73,10 @@ def simple_transaction():
         client=client,
     )
 
-    sign_doc = tx.get_sign_doc()
-    signature_alice = sending_wallet.sign(sign_doc.SerializeToString())
-    signed_tx = tx.get_signed_tx([signature_alice])
+    signature_alice = sending_wallet.sign(tx.sign_doc.SerializeToString())
+    signed_tx = tx.set_signatures(signature_alice).signed_tx
 
-    client.broadcast_transaction_block_mode(signed_tx.SerializeToString())
+    client.broadcast_transaction(signed_tx.SerializeToString())
 
     sending_account_aft_bal = client.query_account_balance(sending_wallet.address)
     receiving_account_aft_bal = client.query_account_balance(TO_ADDRESS)
@@ -136,11 +135,10 @@ def transaction_with_two_messages():
     )
     tx.append_message(msg_send_200_cro)
 
-    sign_doc = tx.get_sign_doc()
-    signature_alice = sending_wallet.sign(sign_doc.SerializeToString())
-    signed_tx = tx.get_signed_tx([signature_alice])
+    signature_alice = sending_wallet.sign(tx.sign_doc.SerializeToString())
+    signed_tx = tx.set_signatures(signature_alice).signed_tx
 
-    client.broadcast_transaction_block_mode(signed_tx.SerializeToString())
+    client.broadcast_transaction(signed_tx.SerializeToString())
 
     sending_account_aft_bal = client.query_account_balance(sending_wallet.address)
     receiving_account_aft_bal = client.query_account_balance(TO_ADDRESS)

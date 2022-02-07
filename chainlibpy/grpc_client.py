@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from dataclasses import dataclass
-from typing import Optional
+from typing import Literal, Optional
 
 from grpc import ChannelCredentials, insecure_channel, secure_channel
 
@@ -133,38 +133,31 @@ class GrpcClient:
             raise TypeError("Unexpected account type")
         return account
 
-    def broadcast_transaction_sync_mode(self, tx_byte: bytes) -> None:
-        """Broadcasts raw transaction in sync mode.
+    def broadcast_transaction(
+        self, tx_byte: bytes, mode: Literal["sync", "async", "block"] = "block"
+    ) -> None:
+        """Broadcasts raw transaction in a mode.
 
-        client waits for a CheckTx execution response only
+        sync mode: client waits for a CheckTx execution response only
 
-        Args:
-            tx_byte (bytes): raw transaction
-        """
-        self.tx_client.BroadcastTx(
-            BroadcastTxRequest(tx_bytes=tx_byte, mode=BroadcastMode.BROADCAST_MODE_SYNC)
-        )
+        async mode: client returns immediately
 
-    def broadcast_transaction_async_mode(self, tx_byte: bytes) -> None:
-        """Broadcasts raw transaction in async mode.
-
-        client returns immediately
+        block mode(default): client waits for the tx to be committed in a block
 
         Args:
             tx_byte (bytes): raw transaction
+            mode (Literal[, optional): broadcast mode. Defaults to "block".
+
+        Raises:
+            TypeError: mode is not one of "sync", "async" or "block"
         """
-        self.tx_client.BroadcastTx(
-            BroadcastTxRequest(tx_bytes=tx_byte, mode=BroadcastMode.BROADCAST_MODE_ASYNC)
-        )
+        if mode == "sync":
+            _mode = BroadcastMode.BROADCAST_MODE_SYNC
+        elif mode == "async":
+            _mode = BroadcastMode.BROADCAST_MODE_ASYNC
+        elif mode == "block":
+            _mode = BroadcastMode.BROADCAST_MODE_BLOCK
+        else:
+            raise TypeError("Unexcepted mode, should be [sync, async, block]")
 
-    def broadcast_transaction_block_mode(self, tx_byte: bytes) -> None:
-        """Broadcasts raw transaction in block mode.
-
-        client waits for the tx to be committed in a block
-
-        Args:
-            tx_byte (bytes): raw transaction
-        """
-        self.tx_client.BroadcastTx(
-            BroadcastTxRequest(tx_bytes=tx_byte, mode=BroadcastMode.BROADCAST_MODE_BLOCK)
-        )
+        self.tx_client.BroadcastTx(BroadcastTxRequest(tx_bytes=tx_byte, mode=_mode))

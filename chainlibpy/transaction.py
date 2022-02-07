@@ -90,15 +90,26 @@ class Transaction:
 
         return self
 
-    def get_tx_body(self) -> TxBody:
-        """Get cosmos.tx.v1beta1.TxBody protobuf message of this transaction.
+    def set_signatures(self, *signatures: bytes) -> "Transaction":
+        """Set signatures for this transaction.
+
+        Args:
+            *signatures (bytes): signatures to be included in this transaction
 
         Returns:
-            TxBody: cosmos.tx.v1beta1.TxBody message
+            Transaction: transaction object with newly added signatures
         """
+
+        self._signatures = list(signatures)
+
+        return self
+
+    @property
+    def tx_body(self) -> TxBody:
         return TxBody(messages=self._packed_msgs, memo=self._memo)
 
-    def get_auth_info(self) -> AuthInfo:
+    @property
+    def auth_info(self) -> AuthInfo:
         signer_infos = []
         for wallet in self._from_wallets:
             # query account to get the latest account.sequence
@@ -116,13 +127,18 @@ class Transaction:
             signer_infos=signer_infos, fee=Fee(amount=self._fee, gas_limit=self._gas_limit)
         )
 
-    def get_sign_doc(self) -> SignDoc:
+    @property
+    def sign_doc(self) -> SignDoc:
         return SignDoc(
-            body_bytes=self.get_tx_body().SerializeToString(),
-            auth_info_bytes=self.get_auth_info().SerializeToString(),
+            body_bytes=self.tx_body.SerializeToString(),
+            auth_info_bytes=self.auth_info.SerializeToString(),
             chain_id=self._chain_id,
             account_number=self._account_number,
         )
 
-    def get_signed_tx(self, signatures: List[bytes]) -> Tx:
-        return Tx(body=self.get_tx_body(), auth_info=self.get_auth_info(), signatures=signatures)
+    @property
+    def signed_tx(self) -> Tx:
+        if self._signatures is None:
+            raise TypeError("Set signatures first before getting signed_tx")
+
+        return Tx(body=self.tx_body, auth_info=self.auth_info, signatures=self._signatures)

@@ -1,5 +1,5 @@
 import decimal
-from typing import Union
+from typing import Dict, Union
 
 from chainlibpy.generated.cosmos.base.v1beta1.coin_pb2 import Coin
 from chainlibpy.grpc_client import NetworkConfig
@@ -178,38 +178,27 @@ class CROCoin:
         """Returns protobuf compatiable Coin message."""
         return Coin(amount=self.amount_base, denom=self._base_denom)
 
-    def plus(self, coin: "CROCoin") -> "CROCoin":
-        """Add a coin amount to this coin.
+    @property
+    def amino_coin_message(self) -> Dict[str, str]:
+        """Returns json amino compatiable Coin message."""
+        return {"amount": self.amount_base, "denom": self._base_denom}
 
-        Args:
-            coin (CROCoin): CROCoin to be added
+    def __add__(self, __o: object) -> "CROCoin":
+        if not isinstance(__o, CROCoin):
+            return NotImplemented
 
-        Returns:
-            CroCoin: Sum of two CROCoin object
-
-        Raises:
-            ValueError: Sum is greater than `MAX_CRO_SUPPLY`
-        """
         with decimal.localcontext() as ctx:
             ctx.prec = 999
-            result_value = decimal.Decimal(self.amount_base) + decimal.Decimal(coin.amount_base)
+            result_value = decimal.Decimal(self.amount_base) + decimal.Decimal(__o.amount_base)
 
         return type(self)(result_value, self._base_denom, self._network_config)
 
-    def minus(self, coin: "CROCoin") -> "CROCoin":
-        """Subtract a coin amount from this coin.
+    def __sub__(self, __o: object) -> "CROCoin":
+        if not isinstance(__o, CROCoin):
+            return NotImplemented
 
-        Args:
-            coin (CROCoin): CROCoin to be subtracted
-
-        Returns:
-            CroCoin: Difference after subtracting the coin amount
-
-        Raises:
-            ValueError: Difference is less than 0
-        """
         with decimal.localcontext() as ctx:
             ctx.prec = 999
-            result_value = decimal.Decimal(self.amount_base) - decimal.Decimal(coin.amount_base)
+            result_value = decimal.Decimal(self.amount_base) - decimal.Decimal(__o.amount_base)
 
         return type(self)(result_value, self._base_denom, self._network_config)
