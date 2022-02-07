@@ -1,5 +1,5 @@
 import decimal
-from typing import Union
+from typing import Dict, Union
 
 from chainlibpy.generated.cosmos.base.v1beta1.coin_pb2 import Coin
 from chainlibpy.grpc_client import NetworkConfig
@@ -38,7 +38,9 @@ class CROCoin:
         self._base_denom = network_config.coin_base_denom
         self._exponent = network_config.exponent
         self._unit = unit
-        self.amount_base = amount
+        self._network_config = network_config
+        self.amount_base = amount  # type:ignore
+        # pending https://github.com/python/mypy/issues/3004 to remove above type:ignore
 
     @property
     def amount_base(self) -> str:
@@ -49,7 +51,7 @@ class CROCoin:
         return self._amount_base
 
     @amount_base.setter
-    def amount_base(self, amount):
+    def amount_base(self, amount: Union[int, float, str, "decimal.Decimal"]) -> None:
         temp_base_amount = self._to_number_in_base(amount, self._unit)
 
         if "." in temp_base_amount:
@@ -89,7 +91,9 @@ class CROCoin:
         """
         return f"{self.amount_base}{self._base_denom}"
 
-    def __eq__(self, __o: "CROCoin") -> bool:
+    def __eq__(self, __o: object) -> bool:
+        if not isinstance(__o, CROCoin):
+            return NotImplemented
         return self.amount_base == __o.amount_base
 
     def _cast_to_str(self, number: Union[int, float, decimal.Decimal]) -> str:
@@ -128,10 +132,10 @@ class CROCoin:
                 f"Expect denom to be {self._denom} or {self._base_denom}, got ${unit}"
             )
 
-    def _from_number_in_base(self, number: int, unit: str) -> str:
+    def _from_number_in_base(self, number: str, unit: str) -> str:
         """Takes an amount of base denom and converts it to an amount of other
         denom unit."""
-        if number == 0:
+        if number == "0":
             return "0"
 
         unit_conversion = self._get_conversion_rate_to_base_unit(unit)
@@ -169,6 +173,32 @@ class CROCoin:
 
         return self._cast_to_str(result_value)
 
-    def to_coin_message(self) -> "Coin":
+    @property
+    def protobuf_coin_message(self) -> "Coin":
         """Returns protobuf compatiable Coin message."""
-        return Coin(amount=self.base_amount, denom=self._base_denom)
+        return Coin(amount=self.amount_base, denom=self._base_denom)
+
+    @property
+    def amino_coin_message(self) -> Dict[str, str]:
+        """Returns json amino compatiable Coin message."""
+        return {"amount": self.amount_base, "denom": self._base_denom}
+
+    def __add__(self, __o: object) -> "CROCoin":
+        if not isinstance(__o, CROCoin):
+            return NotImplemented
+
+        with decimal.localcontext() as ctx:
+            ctx.prec = 999
+            result_value = decimal.Decimal(self.amount_base) + decimal.Decimal(__o.amount_base)
+
+        return type(self)(result_value, self._base_denom, self._network_config)
+
+    def __sub__(self, __o: object) -> "CROCoin":
+        if not isinstance(__o, CROCoin):
+            return NotImplemented
+
+        with decimal.localcontext() as ctx:
+            ctx.prec = 999
+            result_value = decimal.Decimal(self.amount_base) - decimal.Decimal(__o.amount_base)
+
+        return type(self)(result_value, self._base_denom, self._network_config)

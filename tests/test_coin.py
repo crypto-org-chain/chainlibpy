@@ -160,7 +160,7 @@ def test_crocoin_with_wrong_unit_should_raise_exception(
 ):
     with pytest.raises(
         AssertionError,
-        match=f"unit should be {local_test_network_config.coin_denom} or {local_test_network_config.coin_base_denom}, got {wrong_unit}",  # noqa 501
+        match=f"unit should be {local_test_network_config.coin_denom} or {local_test_network_config.coin_base_denom}, got {wrong_unit}",  # noqa: 501
     ):
         CROCoin(amount, wrong_unit, local_test_network_config)
 
@@ -188,7 +188,7 @@ def test_crocoin_beyond_max_supply_should_raise_exception(
 
     with pytest.raises(
         ValueError,
-        match=rf"^Input is more than maximum cro supply .* got {invalid_amount_base}basecro$",  # noqa 501
+        match=rf"^Input is more than maximum cro supply .* got {invalid_amount_base}basecro$",  # noqa: 501
     ):
         CROCoin(invalid_amount, unit, local_test_network_config)
 
@@ -226,6 +226,27 @@ def test_crocoin_below_zero_should_raise_exception(
         ("50000000.00000000000001", CRO_DENOM),
     ],
 )
-def test_crocoin_temp(invalid_amount, unit, local_test_network_config: "NetworkConfig"):
+def test_crocoin_less_than_1basecro_should_raise_exception(
+    invalid_amount, unit, local_test_network_config: "NetworkConfig"
+):
     with pytest.raises(ValueError, match="Amount is less than 1basecro"):
         CROCoin(invalid_amount, unit, local_test_network_config)
+
+
+def test_addition_result_more_than_max_should_raise_exception(local_test_network_config):
+    max_supply_cro = CROCoin(MAX_CRO_SUPPLY, CRO_DENOM, local_test_network_config)
+    one_cro = CROCoin(1, CRO_DENOM, local_test_network_config)
+
+    with pytest.raises(
+        ValueError,
+        match=rf"^Input is more than maximum cro supply .* got 3000000000100000000basecro$",  # noqa: 501
+    ):
+        max_supply_cro + one_cro
+
+
+def test_subtraction_result_below_zero_should_raise_exception(local_test_network_config):
+    one_cro = CROCoin(1, CRO_DENOM, local_test_network_config)
+    two_cro = CROCoin(2, CRO_DENOM, local_test_network_config)
+
+    with pytest.raises(ValueError, match="Amount cannot be negative"):
+        one_cro - two_cro

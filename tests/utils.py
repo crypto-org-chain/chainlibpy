@@ -142,7 +142,7 @@ def download_latest_binary(latest_release_info):
         local_file.unlink()
     else:
         raise ValueError(
-            f"{compatible_asset_name} could not be found on crypto-org-chain/chain-main GitHub release"  # noqa 501
+            f"{compatible_asset_name} could not be found on crypto-org-chain/chain-main GitHub release"  # noqa: 501
         )
 
 
@@ -160,7 +160,7 @@ def check_local_chain_binary():
 
         if latest_release_version != local_version:
             print(
-                f"download binary due to outdated version local: {local_version}, latest release: {latest_release_version}"  # noqa 501
+                f"download binary due to outdated version local: {local_version}, latest release: {latest_release_version}"  # noqa: 501
             )
             download_latest_binary(latest_release_info)
     else:

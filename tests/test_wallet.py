@@ -5,7 +5,7 @@ from chainlibpy.wallet import Wallet
 
 
 def test_generate_wallet():
-    seed = "burst negative solar evoke traffic yard lizard next series foster seminar enter wrist captain bulb trap giggle country sword season shoot boy bargain deal"  # noqa 501
+    seed = "burst negative solar evoke traffic yard lizard next series foster seminar enter wrist captain bulb trap giggle country sword season shoot boy bargain deal"  # noqa: 501
     wallet = Wallet(seed)
     assert wallet.private_key == bytes.fromhex(
         "dc81c553efffdce74035a194ea7a58f1d67bdfd1329e33f684460d9ed6223faf"

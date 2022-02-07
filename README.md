@@ -13,10 +13,11 @@
 - [Usage](#usage)
   - [Generating a wallet](#generating-a-wallet)
   - [Signing and broadcasting a transaction](#signing-and-broadcasting-a-transaction)
-  - [Using secure gRPC channel](#using-secure-grpc-channel)
+  - [Interact with mainnet or testnet](#interact-with-mainnet-or-testnet)
 - [Acknowledgement](#acknowledgement)
 - [Development](#development)
   - [Set up development environment](#set-up-development-environment)
+  - [Add pre-commit git hook](#add-pre-commit-git-hook)
   - [Generate gRPC code](#generate-grpc-code)
   - [Tox](#tox)
 
@@ -50,37 +51,21 @@ print(wallet.address)
 
 ### Signing and broadcasting a transaction<a name="signing-and-broadcasting-a-transaction"></a>
 
-```python
-from chainlibpy.generated.cosmos.base.v1beta1.coin_pb2 import Coin
-from chainlibpy.grpc_client import GrpcClient
-from chainlibpy.transaction import sign_transaction
-from chainlibpy.wallet import Wallet
+Please refer to `example/transaction.py` for how to start a local testnet with `pystarport` and change information below to run the examples successfully.
 
-# Refer to example/transaction.py for how to obtain CONSTANT values below
-DENOM = "basecro"
-MNEMONIC_PHRASE = "first ... last"
-TO_ADDRESS = "cro...add"
-AMOUNT = [Coin(amount="10000", denom=DENOM)]
-CHAIN_ID = "chainmaind"
-GRPC_ENDPOINT = "0.0.0.0:26653"
-
-wallet = Wallet(MNEMONIC_PHRASE)
-client = GrpcClient(wallet, CHAIN_ID, GRPC_ENDPOINT)
-
-from_address = wallet.address
-account_number = client.query_account_data(wallet.address).account_number
-
-msg = client.get_packed_send_msg(wallet.address, TO_ADDRESS, AMOUNT)
-tx = client.generate_tx([msg], [wallet.address], [wallet.public_key])
-sign_transaction(tx, wallet.private_key, CHAIN_ID, account_number)
-client.broadcast_tx(tx)
+```diff
+# Obtained from {directory_started_pystarport}/data/chainmaind/accounts.json
+# To recover one of the genesis account
+- MNEMONIC_PHRASE = "first ... last"
++ MNEMONIC_PHRASE = "REMEMBER TO CHANGE"
+# Obtained from {directory_started_pystarport}/data/chainmaind/accounts.json
+- TO_ADDRESS = "cro...add"
++ TO_ADDRESS = "REMEMBER TO CHANGE"
 ```
 
-You may also refer to `example/transaction.py` on how to use a high level function `bank_send()` to sign and broadcast a transaction
+### Interact with mainnet or testnet<a name="interact-with-mainnet-or-testnet"></a>
 
-### Using secure gRPC channel<a name="using-secure-grpc-channel"></a>
-
-Please refer to `example/secure_channel_example.py` on how to use secure gRPC channel with server certificate
+Please refer to `example/secure_channel_example.py` on how to use secure gRPC channel with server certificate to interact with mainnet or testnet.
 
 ## Acknowledgement<a name="acknowledgement"></a>
 
@@ -98,10 +83,18 @@ Thanks to [eth-utils](https://github.com/ethereum/eth-utils) for the following:
 
 ### Set up development environment<a name="set-up-development-environment"></a>
 
-More about [poetry](https://python-poetry.org/docs/).
+Run command below to install dependencies (more about [poetry](https://python-poetry.org/docs/)):
 
 ```bash
 poetry install
+```
+
+### Add pre-commit git hook<a name="add-pre-commit-git-hook"></a>
+
+To set up the git hook scripts, so that [`pre-commit`](https://pre-commit.com/) will run automatically on `git commit`:
+
+```bash
+pre-commit install
 ```
 
 ### Generate gRPC code<a name="generate-grpc-code"></a>
@@ -117,25 +110,31 @@ poetry shell
 ./generated_protos.sh -COSMOS_REF=v0.44.5
 ```
 
-If more generated gRPC code is needed in the future, please add the `.proto` files needed here in `generated_protos.sh`:
+If more generated gRPC code is needed in the future, please add the path to `.proto` file needed here in `generated_protos.sh`:
 
-```bash
+```diff
 # Add .proto files here to generate respective gRPC code
 PROTO_FILES="
 $COSMOS_SDK_DIR/proto/cosmos/auth/v1beta1/auth.proto
++$COSMOS_SDK_DIR/proto/other.proto
 ...
 ```
 
 ### Tox<a name="tox"></a>
 
+[Tox](https://tox.wiki/en/latest/) is a tool to automate and standardize testing processes in Python.
+
+For this project, the list of environment that will be run when invoking `tox` command is `py{38,39}`. Hence we need to set up Python 3.8 and 3.9 for this project. Run command below to set a local application-specific Python version (in this case 3.8 and 3.9) with [pyenv](https://github.com/pyenv/pyenv):
+
 ```bash
 pyenv local 3.8.a 3.9.b
 ```
 
-`a` and `b` are python versions installed on your computer by `pyenv`. More about [pyenv](https://github.com/pyenv/pyenv).
+**Note:** `a` and `b` are python versions installed on your computer by `pyenv`.
 
-After this command, a `.python-version` file will be generated at project root directory, which means python versions inside `.python-version` are presented for this project. So running `tox` command with `py{38,39}` configuration should succeed.\
-Then run to verify. Command below is recommended to run before pushing a commit.
+After running command above, a `.python-version` file will be generated, which means python versions inside `.python-version` are presented for this project. Now, running command `tox` should succeed without prompting environment missing error.
+
+Run command below to verify:
 
 ```bash
 poetry run tox
@@ -143,3 +142,5 @@ poetry run tox
 poetry shell
 tox
 ```
+
+It is also recommended to run `tox` command before pushing a commit.

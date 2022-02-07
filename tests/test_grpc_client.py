@@ -1,26 +1,37 @@
+import socket
 import ssl
 
 import grpc
 import pytest
 
-from chainlibpy import CRO_NETWORK, GrpcClient, NetworkConfig, Wallet
+from chainlibpy import (
+    CRO_NETWORK,
+    CROCoin,
+    GrpcClient,
+    NetworkConfig,
+    Transaction,
+    Wallet,
+)
+from chainlibpy.generated.cosmos.bank.v1beta1.tx_pb2 import MsgSend
 
-from .utils import ALICE, get_blockchain_account_info, get_predefined_account_coins
+from .utils import ALICE, BOB, CRO_DENOM, get_blockchain_account_info
 
 
 @pytest.mark.parametrize("network_config", CRO_NETWORK.values())
 def test_network_config(network_config: "NetworkConfig"):
-    wallet = Wallet.new(path=network_config.derivation_path, hrp=network_config.address_prefix)
-
     (server_host, server_port) = network_config.grpc_endpoint.split(":")
 
-    conn = ssl.create_connection((server_host, server_port))
     context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
-    sock = context.wrap_socket(conn, server_hostname=server_host)
-    certificate = ssl.DER_cert_to_PEM_cert(sock.getpeercert(True))
-    creds = grpc.ssl_channel_credentials(str.encode(certificate))
+    with socket.create_connection((server_host, int(server_port))) as sock:
+        with context.wrap_socket(sock, server_hostname=server_host) as ssock:
+            certificate_DER = ssock.getpeercert(True)
 
-    client = GrpcClient(wallet, network_config, creds)
+    if certificate_DER is None:
+        pytest.fail("no certificate returned from server")
+
+    certificate_PEM = ssl.DER_cert_to_PEM_cert(certificate_DER)
+    creds = grpc.ssl_channel_credentials(str.encode(certificate_PEM))
+    client = GrpcClient(network_config, creds)
 
     assert (
         client.query_bank_denom_metadata(network_config.coin_base_denom).metadata.base
@@ -28,17 +39,109 @@ def test_network_config(network_config: "NetworkConfig"):
     )
 
 
-# TODO
-# Note: temporary test case to test newly added fixtures and local test environment
-def test_test_environment(blockchain_config_dict, blockchain_accounts, local_test_network_config):
-    alice_coin = get_predefined_account_coins(blockchain_config_dict, ALICE)
-    print(alice_coin)
+def test_send_cro(blockchain_accounts, local_test_network_config: "NetworkConfig"):
+    client = GrpcClient(local_test_network_config)
+    alice_info = get_blockchain_account_info(blockchain_accounts, ALICE)
+    alice_wallet = Wallet(alice_info["mnemonic"])
+    alice_account = client.query_account(alice_info["address"])
+    bob_info = get_blockchain_account_info(blockchain_accounts, BOB)
+    bob_wallet = Wallet(bob_info["mnemonic"])
+    alice_bal_init = client.query_account_balance(alice_wallet.address)
+    bob_bal_init = client.query_account_balance(bob_wallet.address)
+    alice_coin_init = CROCoin(
+        alice_bal_init.balance.amount, alice_bal_init.balance.denom, local_test_network_config
+    )
+    bob_coin_init = CROCoin(
+        bob_bal_init.balance.amount, bob_bal_init.balance.denom, local_test_network_config
+    )
 
-    alice_account = get_blockchain_account_info(blockchain_accounts, ALICE)
-    print(alice_account)
+    ten_cro = CROCoin("10", CRO_DENOM, local_test_network_config)
+    one_cro_fee = CROCoin("1", CRO_DENOM, local_test_network_config)
+    msg_send = MsgSend(
+        from_address=alice_info["address"],
+        to_address=bob_info["address"],
+        amount=[ten_cro.protobuf_coin_message],
+    )
 
-    wallet_default_derivation = Wallet(alice_account["mnemonic"])
-    assert wallet_default_derivation.address == alice_account["address"]
+    tx = Transaction(
+        chain_id=local_test_network_config.chain_id,
+        from_wallets=[alice_wallet],
+        msgs=[msg_send],
+        account_number=alice_account.account_number,
+        fee=[one_cro_fee.protobuf_coin_message],
+        client=client,
+    )
 
-    client = GrpcClient(wallet_default_derivation, local_test_network_config)
-    print(client.get_balance(wallet_default_derivation.address, "basecro"))
+    signature_alice = alice_wallet.sign(tx.sign_doc.SerializeToString())
+    signed_tx = tx.set_signatures(signature_alice).signed_tx
+
+    client.broadcast_transaction(signed_tx.SerializeToString())
+
+    alice_bal_aft = client.query_account_balance(alice_wallet.address)
+    bob_bal_aft = client.query_account_balance(bob_wallet.address)
+    alice_coin_aft = CROCoin(
+        alice_bal_aft.balance.amount, alice_bal_aft.balance.denom, local_test_network_config
+    )
+    bob_coin_aft = CROCoin(
+        bob_bal_aft.balance.amount, bob_bal_aft.balance.denom, local_test_network_config
+    )
+
+    assert alice_coin_aft == alice_coin_init - ten_cro - one_cro_fee
+    assert bob_coin_aft == bob_coin_init + ten_cro
+
+
+def test_2_msgs_in_1_tx(blockchain_accounts, local_test_network_config: "NetworkConfig"):
+    client = GrpcClient(local_test_network_config)
+    alice_info = get_blockchain_account_info(blockchain_accounts, ALICE)
+    alice_wallet = Wallet(alice_info["mnemonic"])
+    alice_account = client.query_account(alice_info["address"])
+    bob_info = get_blockchain_account_info(blockchain_accounts, BOB)
+    bob_wallet = Wallet(bob_info["mnemonic"])
+    alice_bal_init = client.query_account_balance(alice_wallet.address)
+    bob_bal_init = client.query_account_balance(bob_wallet.address)
+    alice_coin_init = CROCoin(
+        alice_bal_init.balance.amount, alice_bal_init.balance.denom, local_test_network_config
+    )
+    bob_coin_init = CROCoin(
+        bob_bal_init.balance.amount, bob_bal_init.balance.denom, local_test_network_config
+    )
+
+    ten_cro = CROCoin("10", CRO_DENOM, local_test_network_config)
+    twnenty_cro = CROCoin("20", CRO_DENOM, local_test_network_config)
+    one_cro_fee = CROCoin("1", CRO_DENOM, local_test_network_config)
+    msg_send_10_cro = MsgSend(
+        from_address=alice_info["address"],
+        to_address=bob_info["address"],
+        amount=[ten_cro.protobuf_coin_message],
+    )
+    msg_send_20_cro = MsgSend(
+        from_address=alice_info["address"],
+        to_address=bob_info["address"],
+        amount=[twnenty_cro.protobuf_coin_message],
+    )
+
+    tx = Transaction(
+        chain_id=local_test_network_config.chain_id,
+        from_wallets=[alice_wallet],
+        msgs=[msg_send_10_cro],
+        account_number=alice_account.account_number,
+        fee=[one_cro_fee.protobuf_coin_message],
+        client=client,
+    ).append_message(msg_send_20_cro)
+
+    signature_alice = alice_wallet.sign(tx.sign_doc.SerializeToString())
+    signed_tx = tx.set_signatures(signature_alice).signed_tx
+
+    client.broadcast_transaction(signed_tx.SerializeToString())
+
+    alice_bal_aft = client.query_account_balance(alice_wallet.address)
+    bob_bal_aft = client.query_account_balance(bob_wallet.address)
+    alice_coin_aft = CROCoin(
+        alice_bal_aft.balance.amount, alice_bal_aft.balance.denom, local_test_network_config
+    )
+    bob_coin_aft = CROCoin(
+        bob_bal_aft.balance.amount, bob_bal_aft.balance.denom, local_test_network_config
+    )
+
+    assert alice_coin_aft == alice_coin_init - ten_cro - twnenty_cro - one_cro_fee
+    assert bob_coin_aft == bob_coin_init + ten_cro + twnenty_cro
