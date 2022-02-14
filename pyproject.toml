@@ -6,7 +6,6 @@ classifiers = [
 ]
 description = "Tools for Crypto.org Chain wallet management and offline transaction signing"
 exclude = ["generate_protos.sh"]
-include = ["LICENSE"]
 keywords = ["CRO", "blockchain", "signature", "crypto.com"]
 license = "Apache-2.0"
 name = "chainlibpy"
