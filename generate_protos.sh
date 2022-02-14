@@ -29,6 +29,7 @@ $COSMOS_SDK_DIR/proto/cosmos/base/query/v1beta1/pagination.proto
 $COSMOS_SDK_DIR/proto/cosmos/base/v1beta1/coin.proto
 $COSMOS_SDK_DIR/proto/cosmos/crypto/secp256k1/keys.proto
 $COSMOS_SDK_DIR/proto/cosmos/crypto/multisig/v1beta1/multisig.proto
+$COSMOS_SDK_DIR/proto/cosmos/crypto/multisig/keys.proto
 $COSMOS_SDK_DIR/proto/cosmos/tx/signing/v1beta1/signing.proto
 $COSMOS_SDK_DIR/proto/cosmos/tx/v1beta1/service.proto
 $COSMOS_SDK_DIR/proto/cosmos/tx/v1beta1/tx.proto

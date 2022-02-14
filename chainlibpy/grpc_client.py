@@ -59,6 +59,15 @@ CRO_NETWORK = {
         exponent=8,
         derivation_path="m/44'/1'/0'/0/0",
     ),
+    "devnet": NetworkConfig(
+        grpc_endpoint="0.0.0.0:26653",
+        chain_id="chain_id",
+        address_prefix="cro",
+        coin_denom="cro",
+        coin_base_denom="basecro",
+        derivation_path="m/44'/394'/0'/0/0",
+        exponent=8,
+    ),
 }
 
 
@@ -160,4 +169,4 @@ class GrpcClient:
         else:
             raise TypeError("Unexcepted mode, should be [sync, async, block]")
 
-        self.tx_client.BroadcastTx(BroadcastTxRequest(tx_bytes=tx_byte, mode=_mode))
+        return self.tx_client.BroadcastTx(BroadcastTxRequest(tx_bytes=tx_byte, mode=_mode))

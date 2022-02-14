@@ -1,0 +1,19 @@
+chain_id_test:
+  validators:
+    - coins: 10000cro
+      staked: 1000cro
+    - coins: 1000cro
+      staked: 1000cro
+  accounts:
+    - name: msigner0
+      coins: 2000cro
+      mnemonic: hurry exist clerk safe aware anchor brush run dentist come surge frame tired economy school grief volcano enforce word alpha liar clever sure taxi
+    - name: msigner1
+      coins: 2000cro
+    - name: msigner2
+      coins: 2000cro
+      mnemonic: repeat life corn cliff tragic merry zoo saddle fuel shove column pulp decorate forward rabbit ocean agent snack gaze mansion when wood grab pear
+  app_state:
+    staking:
+      params:
+        unbonding_time: "10s"
