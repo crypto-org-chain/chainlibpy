@@ -23,6 +23,7 @@ from chainlibpy.generated.cosmos.bank.v1beta1.query_pb2_grpc import (
 from chainlibpy.generated.cosmos.tx.v1beta1.service_pb2 import (
     BroadcastMode,
     BroadcastTxRequest,
+    BroadcastTxResponse,
 )
 from chainlibpy.generated.cosmos.tx.v1beta1.service_pb2_grpc import (
     ServiceStub as TxGrpcClient,
@@ -135,7 +136,7 @@ class GrpcClient:
 
     def broadcast_transaction(
         self, tx_byte: bytes, mode: Literal["sync", "async", "block"] = "block"
-    ) -> None:
+    ) -> BroadcastTxResponse:
         """Broadcasts raw transaction in a mode.
 
         sync mode: client waits for a CheckTx execution response only
@@ -147,6 +148,9 @@ class GrpcClient:
         Args:
             tx_byte (bytes): raw transaction
             mode (Literal[, optional): broadcast mode. Defaults to "block".
+
+        Returns:
+            BroadcastTxResponse: cosmos.tx.v1beta1.service_pb2.BroadcastTxResponse
 
         Raises:
             TypeError: mode is not one of "sync", "async" or "block"
@@ -160,4 +164,4 @@ class GrpcClient:
         else:
             raise TypeError("Unexcepted mode, should be [sync, async, block]")
 
-        self.tx_client.BroadcastTx(BroadcastTxRequest(tx_bytes=tx_byte, mode=_mode))
+        return self.tx_client.BroadcastTx(BroadcastTxRequest(tx_bytes=tx_byte, mode=_mode))
