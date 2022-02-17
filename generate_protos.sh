@@ -51,13 +51,11 @@ mv "$COSMOS_SDK_DIR-$COSMOS_SUFFIX" "$COSMOS_SDK_DIR"
 
 python -m grpc.tools.protoc --proto_path=$COSMOS_SDK_DIR/proto --proto_path=$COSMOS_SDK_DIR/third_party/proto --python_out=$OUTPUT --grpc_python_out=$OUTPUT $PROTO_FILES
 
-cat > $OUTPUT/__init__.py << EOL
-import os
-import sys
-
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-EOL
-
-
-# Teardown: remove download directory
-rm -rf $TEMP_DOWNLOAD_DIR
+# use relative imports in generated modules https://github.com/protocolbuffers/protobuf/issues/1491
+protol \
+  --create-package \
+  --in-place \
+  --python-out $OUTPUT \
+  protoc \
+  --proto-path=$COSMOS_SDK_DIR/proto \
+  --proto-path=$COSMOS_SDK_DIR/third_party/proto $PROTO_FILES

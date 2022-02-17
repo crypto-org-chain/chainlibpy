@@ -22,20 +22,22 @@ repos:
   - id: black
     exclude: ^chainlibpy/generated/
 
-- repo: https://github.com/pre-commit/mirrors-mypy
-  rev: v0.931
-  hooks:
-  - id: mypy
-    # NOTE: this hook does NOT read "files" and "exclude" configs from mypy configuration files
-    files: ^chainlibpy/
-    exclude: ^chainlibpy/(generated/|amino/) # TODO to fix type errors in amino directory
-    # NOTE: need to add additional_dependencies explicitly
-    additional_dependencies:
-    - grpc-stubs==1.24.7
-    - types-PyYAML==6.0.4
-    - types-protobuf==3.19.8
-    - types-requests==2.27.8
-    - types-toml==0.10.3
+# TODO: exclude files doesn't work
+#- repo: https://github.com/pre-commit/mirrors-mypy
+#  rev: v0.931
+#  hooks:
+#  - id: mypy
+#    # NOTE: this hook does NOT read "files" and "exclude" configs from mypy configuration files
+#    files: ^chainlibpy/
+#    # TODO to fix type errors in amino directory
+#    exclude: ^chainlibpy/(generated/|amino/)
+#    # NOTE: need to add additional_dependencies explicitly
+#    additional_dependencies:
+#    - grpc-stubs==1.24.7
+#    - types-PyYAML==6.0.4
+#    - types-protobuf==3.19.8
+#    - types-requests==2.27.8
+#    - types-toml==0.10.3
 
 - repo: https://gitlab.com/pycqa/flake8
   rev: 4.0.1
