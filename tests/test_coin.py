@@ -173,10 +173,10 @@ def test_crocoin_with_wrong_unit_should_raise_exception(
         (decimal.Decimal(value=str(MAX_CRO_SUPPLY + 1)), CRO_DENOM, "3000000000100000000"),
         ("30000000000.00000001", CRO_DENOM, "3000000000000000001"),
         (decimal.Decimal(value="30000000000.00000001"), CRO_DENOM, "3000000000000000001"),
-        (MAX_CRO_SUPPLY * 10 ** 8 + 1, BASECRO_DENOM, "3000000000000000001"),
-        (str(MAX_CRO_SUPPLY * 10 ** 8 + 1), BASECRO_DENOM, "3000000000000000001"),
+        (MAX_CRO_SUPPLY * 10**8 + 1, BASECRO_DENOM, "3000000000000000001"),
+        (str(MAX_CRO_SUPPLY * 10**8 + 1), BASECRO_DENOM, "3000000000000000001"),
         (
-            decimal.Decimal(value=str(MAX_CRO_SUPPLY * 10 ** 8 + 1)),
+            decimal.Decimal(value=str(MAX_CRO_SUPPLY * 10**8 + 1)),
             BASECRO_DENOM,
             "3000000000000000001",
         ),

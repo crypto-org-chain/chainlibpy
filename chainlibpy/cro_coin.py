@@ -56,7 +56,7 @@ class CROCoin:
 
         if "." in temp_base_amount:
             raise ValueError(f"Amount is less than 1{self._base_denom}")
-        if int(temp_base_amount) > MAX_CRO_SUPPLY * 10 ** self._exponent:
+        if int(temp_base_amount) > MAX_CRO_SUPPLY * 10**self._exponent:
             raise ValueError(
                 "Input is more than maximum cro supply"
                 f" {MAX_CRO_SUPPLY * 10 ** self._exponent}{self._base_denom}"
@@ -124,7 +124,7 @@ class CROCoin:
     def _get_conversion_rate_to_base_unit(self, unit: str) -> decimal.Decimal:
         """Takes a unit and gets its conversion rate to the base unit."""
         if unit == self._denom:
-            return decimal.Decimal(value=10 ** self._exponent)
+            return decimal.Decimal(value=10**self._exponent)
         elif unit == self._base_denom:
             return decimal.Decimal(1)
         else:
@@ -164,8 +164,8 @@ class CROCoin:
             with decimal.localcontext() as ctx:
                 multiplier = len(s_number) - s_number.index(".") - 1
                 ctx.prec = multiplier
-                d_number = decimal.Decimal(value=number, context=ctx) * 10 ** multiplier
-            unit_conversion /= 10 ** multiplier
+                d_number = decimal.Decimal(value=number, context=ctx) * 10**multiplier
+            unit_conversion /= 10**multiplier
 
         with decimal.localcontext() as ctx:
             ctx.prec = 999
