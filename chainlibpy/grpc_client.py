@@ -2,37 +2,23 @@
 # -*- coding: utf-8 -*-
 
 from dataclasses import dataclass
-from typing import Literal, Optional
 
-from grpc import ChannelCredentials, insecure_channel, secure_channel
-
-from chainlibpy.generated.cosmos.auth.v1beta1.auth_pb2 import BaseAccount
-from chainlibpy.generated.cosmos.auth.v1beta1.query_pb2 import QueryAccountRequest
-from chainlibpy.generated.cosmos.auth.v1beta1.query_pb2_grpc import (
-    QueryStub as AuthGrpcClient,
-)
-from chainlibpy.generated.cosmos.bank.v1beta1.query_pb2 import (
-    QueryBalanceRequest,
-    QueryBalanceResponse,
-    QueryDenomMetadataRequest,
-    QueryDenomMetadataResponse,
-)
-from chainlibpy.generated.cosmos.bank.v1beta1.query_pb2_grpc import (
-    QueryStub as BankGrpcClient,
-)
-from chainlibpy.generated.cosmos.tx.v1beta1.service_pb2 import (
-    BroadcastMode,
-    BroadcastTxRequest,
-    BroadcastTxResponse,
-)
-from chainlibpy.generated.cosmos.tx.v1beta1.service_pb2_grpc import (
-    ServiceStub as TxGrpcClient,
+from chainlibpy.generated.common import (
+    BalanceApiVersion,
+    CosmosSdkClient,
+    DenomMetadata,
+    RawRpcAccountStatus,
+    RawRpcBalance,
+    TxBroadcastMode,
+    TxBroadcastResult,
 )
 
 
 @dataclass
 class NetworkConfig:
     grpc_endpoint: str
+    tendermint_rpc: str
+    rest_api: str
     chain_id: str
     address_prefix: str
     coin_denom: str
@@ -43,7 +29,9 @@ class NetworkConfig:
 
 CRO_NETWORK = {
     "mainnet": NetworkConfig(
-        grpc_endpoint="mainnet.crypto.org:9090",
+        grpc_endpoint="https://mainnet.crypto.org:9090",
+        tendermint_rpc="https://mainnet.crypto.org:443",
+        rest_api="https://mainnet.crypto.org:1317",
         chain_id="crypto-org-chain-mainnet-1",
         address_prefix="cro",
         coin_denom="cro",
@@ -52,7 +40,9 @@ CRO_NETWORK = {
         derivation_path="m/44'/394'/0'/0/0",
     ),
     "testnet_croeseid": NetworkConfig(
-        grpc_endpoint="testnet-croeseid-4.crypto.org:9090",
+        grpc_endpoint="https://testnet-croeseid-4.crypto.org:9090",
+        tendermint_rpc="https://testnet-croeseid-4.crypto.org:443",
+        rest_api="https://testnet-croeseid-4.crypto.org:1317",
         chain_id="testnet-croeseid-4",
         address_prefix="tcro",
         coin_denom="tcro",
@@ -62,55 +52,48 @@ CRO_NETWORK = {
     ),
 }
 
+DEFAULT_MODE = TxBroadcastMode.COMMIT()
+
 
 class GrpcClient:
     def __init__(
         self,
         network: NetworkConfig,
-        credentials: Optional[ChannelCredentials] = None,
     ) -> None:
-        if credentials is None:
-            channel = insecure_channel(network.grpc_endpoint)
-        else:
-            channel = secure_channel(network.grpc_endpoint, credentials)
-
-        self.bank_client = BankGrpcClient(channel)
-        self.tx_client = TxGrpcClient(channel)
-        self.auth_client = AuthGrpcClient(channel)
         self.chain_id = network.chain_id
         self.network = network
+        self.client = CosmosSdkClient(
+            network.tendermint_rpc, network.rest_api, BalanceApiVersion.NEW, network.grpc_endpoint
+        )
 
-    def query_bank_denom_metadata(self, denom: str) -> QueryDenomMetadataResponse:
+    def query_bank_denom_metadata(self, denom: str) -> DenomMetadata:
         """Queries metadata of a given coin denomination.
 
         Args:
-            denom (str): raw transaction
+            denom (str): the native coin denomation
 
         Returns:
-            QueryDenomMetadataResponse: cosmos.bank.v1beta1.QueryDenomMetadataResponse message
+            DenomMetadata: information about the queried denomination
         """
-        res = self.bank_client.DenomMetadata(QueryDenomMetadataRequest(denom=denom))
+        res = self.client.get_denom_metadata(denom)
         return res
 
-    def query_account_balance(self, address: str) -> QueryBalanceResponse:
+    def query_account_balance(self, address: str) -> RawRpcBalance:
         """Queries the balance of an address in base denomination.
 
         Args:
             address (str): address to query balance
 
         Returns:
-            QueryBalanceResponse: cosmos.bank.v1beta1.QueryBalanceResponse message
+            RawRpcBalance: cosmos.bank.v1beta1.QueryBalanceResponse message
 
-            Access `amount` by `.balance.amount`
+            Access `amount` by `.amount`
 
-            Access `denom` by `.balance.denom`
+            Access `denom` by `.denom`
         """
-        res = self.bank_client.Balance(
-            QueryBalanceRequest(address=address, denom=self.network.coin_base_denom)
-        )
-        return res
+        return self.client.get_account_balance(address, self.network.coin_base_denom)
 
-    def query_account(self, address: str) -> BaseAccount:
+    def query_account(self, address: str) -> RawRpcAccountStatus:
         """Queries the account information.
 
         Args:
@@ -120,23 +103,20 @@ class GrpcClient:
             TypeError: account associated with address is not `BaseAccount`
 
         Returns:
-            BaseAccount: cosmos.auth.v1beta1.BaseAccount message
+            RawRpcAccountStatus: cosmos.auth.v1beta1.BaseAccount message
 
             Access `account_number` by `.account_number`
 
             Access `sequence` by `.sequence`
         """
-        account_response = self.auth_client.Account(QueryAccountRequest(address=address))
-        account = BaseAccount()
-        if account_response.account.Is(BaseAccount.DESCRIPTOR):
-            account_response.account.Unpack(account)
-        else:
-            raise TypeError("Unexpected account type")
-        return account
+        account_response = self.client.get_account_details(address)
+        if account_response.is_error_response():
+            raise TypeError("Error response: {}".format(account_response))
+        return account_response.account
 
     def broadcast_transaction(
-        self, tx_byte: bytes, mode: Literal["sync", "async", "block"] = "block"
-    ) -> BroadcastTxResponse:
+        self, tx_byte: bytes, mode: TxBroadcastMode = DEFAULT_MODE
+    ) -> TxBroadcastResult:
         """Broadcasts raw transaction in a mode.
 
         sync mode: client waits for a CheckTx execution response only
@@ -147,21 +127,9 @@ class GrpcClient:
 
         Args:
             tx_byte (bytes): raw transaction
-            mode (Literal[, optional): broadcast mode. Defaults to "block".
+            mode (TxBroadcastMode): broadcast mode. Defaults to "TxBroadcastMode.COMMIT".
 
         Returns:
-            BroadcastTxResponse: cosmos.tx.v1beta1.service_pb2.BroadcastTxResponse
-
-        Raises:
-            TypeError: mode is not one of "sync", "async" or "block"
+            BroadcastTxResponse: a subset of cosmos.tx.v1beta1.service_pb2.BroadcastTxResponse
         """
-        if mode == "sync":
-            _mode = BroadcastMode.BROADCAST_MODE_SYNC
-        elif mode == "async":
-            _mode = BroadcastMode.BROADCAST_MODE_ASYNC
-        elif mode == "block":
-            _mode = BroadcastMode.BROADCAST_MODE_BLOCK
-        else:
-            raise TypeError("Unexcepted mode, should be [sync, async, block]")
-
-        return self.tx_client.BroadcastTx(BroadcastTxRequest(tx_bytes=tx_byte, mode=_mode))
+        return self.client.broadcast_tx(tx_byte, mode)

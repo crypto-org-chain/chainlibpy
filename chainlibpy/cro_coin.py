@@ -1,7 +1,7 @@
 import decimal
 from typing import Dict, Union
 
-from chainlibpy.generated.cosmos.base.v1beta1.coin_pb2 import Coin
+from chainlibpy.generated.common import SingleCoin
 from chainlibpy.grpc_client import NetworkConfig
 
 from .utils import is_integer
@@ -174,9 +174,9 @@ class CROCoin:
         return self._cast_to_str(result_value)
 
     @property
-    def protobuf_coin_message(self) -> "Coin":
-        """Returns protobuf compatiable Coin message."""
-        return Coin(amount=self.amount_base, denom=self._base_denom)
+    def single_coin(self) -> "SingleCoin":
+        """Returns DeFi Wallet Core representation."""
+        return SingleCoin.OTHER(self.amount_base, self._base_denom)
 
     @property
     def amino_coin_message(self) -> Dict[str, str]:

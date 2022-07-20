@@ -3,7 +3,7 @@
 
 
 from chainlibpy import CROCoin, GrpcClient, Transaction, Wallet
-from chainlibpy.generated.cosmos.bank.v1beta1.tx_pb2 import MsgSend
+from chainlibpy.generated.common import CosmosSdkMsg
 from chainlibpy.grpc_client import NetworkConfig
 
 # Recommend to use [pystarport](https://pypi.org/project/pystarport/) to setup a testnet locally
@@ -25,7 +25,9 @@ TO_ADDRESS = "cro...add"
 LOCAL_NETWORK = NetworkConfig(
     # grpc_endpoint from {directory_started_pystarport}/data/chaintest/nodex/config/app.toml
     # Look for "gRPC Configuration" section
-    grpc_endpoint="0.0.0.0:26653",
+    grpc_endpoint="http://127.0.0.1:26653",
+    tendermint_rpc="http://127.0.0.1:26657",
+    rest_api="http://127.0.0.1:26658",
     # chain_id from from {directory_started_pystarport}/data/
     # the directory name under data is the chain_id
     chain_id="chaintest",
@@ -48,47 +50,45 @@ def simple_transaction():
     receiving_account_init_bal = client.query_account_balance(TO_ADDRESS)
 
     print(
-        f"sending account initial balance: {sending_account_init_bal.balance.amount}"
-        f"{sending_account_init_bal.balance.denom}"
+        f"sending account initial balance: {sending_account_init_bal.amount}"
+        f"{sending_account_init_bal.denom}"
     )
     print(
-        f"receiving account initial balance: {receiving_account_init_bal.balance.amount}"
-        f"{receiving_account_init_bal.balance.denom}"
+        f"receiving account initial balance: {receiving_account_init_bal.amount}"
+        f"{receiving_account_init_bal.denom}"
     )
 
     ten_cro = CROCoin("10", "cro", LOCAL_NETWORK)
     one_cro_fee = CROCoin("1", "cro", LOCAL_NETWORK)
 
-    msg_send = MsgSend(
-        from_address=sending_wallet.address,
-        to_address=TO_ADDRESS,
-        amount=[ten_cro.protobuf_coin_message],
+    msg_send = CosmosSdkMsg.BANK_SEND(
+        TO_ADDRESS,
+        ten_cro.single_coin,
     )
     tx = Transaction(
         chain_id=LOCAL_NETWORK.chain_id,
-        from_wallets=[sending_wallet],
+        from_wallet=sending_wallet,
         msgs=[msg_send],
         account_number=sending_account.account_number,
-        fee=[one_cro_fee.protobuf_coin_message],
+        fee=one_cro_fee.single_coin,
         client=client,
     )
 
-    signature_alice = sending_wallet.sign(tx.sign_doc.SerializeToString())
-    signed_tx = tx.set_signatures(signature_alice).signed_tx
+    signed_tx = tx.signed_tx
 
-    client.broadcast_transaction(signed_tx.SerializeToString())
+    client.broadcast_transaction(signed_tx)
 
     sending_account_aft_bal = client.query_account_balance(sending_wallet.address)
     receiving_account_aft_bal = client.query_account_balance(TO_ADDRESS)
 
     print("After transaction of sending 10cro with a 1cro fee:")
     print(
-        f"sending account after balance: {sending_account_aft_bal.balance.amount}"
-        f"{sending_account_aft_bal.balance.denom}"
+        f"sending account after balance: {sending_account_aft_bal.amount}"
+        f"{sending_account_aft_bal.denom}"
     )
     print(
-        f"receiving account after balance: {receiving_account_aft_bal.balance.amount}"
-        f"{receiving_account_aft_bal.balance.denom}"
+        f"receiving account after balance: {receiving_account_aft_bal.amount}"
+        f"{receiving_account_aft_bal.denom}"
     )
 
 
@@ -103,53 +103,50 @@ def transaction_with_two_messages():
     receiving_account_init_bal = client.query_account_balance(TO_ADDRESS)
 
     print(
-        f"sending account initial balance  : {sending_account_init_bal.balance.amount}"
-        f"{sending_account_init_bal.balance.denom}"
+        f"sending account initial balance  : {sending_account_init_bal.amount}"
+        f"{sending_account_init_bal.denom}"
     )
     print(
-        f"receiving account initial balance: {receiving_account_init_bal.balance.amount}"
-        f"{receiving_account_init_bal.balance.denom}"
+        f"receiving account initial balance: {receiving_account_init_bal.amount}"
+        f"{receiving_account_init_bal.denom}"
     )
 
     one_hundred_cro = CROCoin("100", "cro", LOCAL_NETWORK)
     two_hundred_cro = CROCoin("200", "cro", LOCAL_NETWORK)
     one_cro_fee = CROCoin("1", "cro", LOCAL_NETWORK)
 
-    msg_send_100_cro = MsgSend(
-        from_address=sending_wallet.address,
-        to_address=TO_ADDRESS,
-        amount=[one_hundred_cro.protobuf_coin_message],
+    msg_send_100_cro = CosmosSdkMsg.BANK_SEND(
+        TO_ADDRESS,
+        one_hundred_cro.single_coin,
     )
-    msg_send_200_cro = MsgSend(
-        from_address=sending_wallet.address,
-        to_address=TO_ADDRESS,
-        amount=[two_hundred_cro.protobuf_coin_message],
+    msg_send_200_cro = CosmosSdkMsg.BANK_SEND(
+        TO_ADDRESS,
+        two_hundred_cro.single_coin,
     )
     tx = Transaction(
         chain_id=LOCAL_NETWORK.chain_id,
-        from_wallets=[sending_wallet],
+        from_wallet=sending_wallet,
         msgs=[msg_send_100_cro],
         account_number=sending_account.account_number,
-        fee=[one_cro_fee.protobuf_coin_message],
+        fee=one_cro_fee.single_coin,
         client=client,
     )
     tx.append_message(msg_send_200_cro)
 
-    signature_alice = sending_wallet.sign(tx.sign_doc.SerializeToString())
-    signed_tx = tx.set_signatures(signature_alice).signed_tx
+    signed_tx = tx.signed_tx
 
-    client.broadcast_transaction(signed_tx.SerializeToString())
+    client.broadcast_transaction(signed_tx)
 
     sending_account_aft_bal = client.query_account_balance(sending_wallet.address)
     receiving_account_aft_bal = client.query_account_balance(TO_ADDRESS)
     sending_account_cro = CROCoin(
-        sending_account_aft_bal.balance.amount,
-        sending_account_aft_bal.balance.denom,
+        sending_account_aft_bal.amount,
+        sending_account_aft_bal.denom,
         LOCAL_NETWORK,
     )
     receiving_account_cro = CROCoin(
-        receiving_account_aft_bal.balance.amount,
-        receiving_account_aft_bal.balance.denom,
+        receiving_account_aft_bal.amount,
+        receiving_account_aft_bal.denom,
         LOCAL_NETWORK,
     )
 
