@@ -1,5 +1,5 @@
 # Copyright (c) 2020, hukkinj1 (licensed under the MIT License)
-# Modifications Copyright (c) 2020-present (licensed under the Apache License, Version 2.0)
+# Modifications Copyright (c) 2020-present Crypto.org (licensed under the Apache License, Version 2.0)
 
 from chainlibpy.wallet import Wallet
 
