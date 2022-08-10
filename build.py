@@ -6,7 +6,6 @@ from subprocess import call
 
 from setuptools_rust import Binding, RustExtension, build_rust
 
-
 # class BuildFailed(Exception):
 #     pass
 
