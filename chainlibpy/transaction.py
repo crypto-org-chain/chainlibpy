@@ -4,37 +4,29 @@
 
 from typing import List, Optional
 
-from google.protobuf import any_pb2, message
-
-from chainlibpy.generated.cosmos.base.v1beta1.coin_pb2 import Coin
-from chainlibpy.generated.cosmos.crypto.secp256k1.keys_pb2 import PubKey
-from chainlibpy.generated.cosmos.tx.signing.v1beta1.signing_pb2 import SignMode
-from chainlibpy.generated.cosmos.tx.v1beta1.tx_pb2 import (
-    AuthInfo,
-    Fee,
-    ModeInfo,
-    SignDoc,
-    SignerInfo,
-    Tx,
-    TxBody,
+from chainlibpy.generated.common import (
+    CosmosSdkMsg,
+    CosmosSdkTxInfo,
+    Network,
+    SingleCoin,
 )
 from chainlibpy.grpc_client import GrpcClient
-from chainlibpy.utils import pack_to_any_message
 from chainlibpy.wallet import Wallet
 
 DEFAULT_GAS_LIMIT = 200_000
+ZERO_COIN = SingleCoin.BASE_CRO(0)
 
 
 class Transaction:
     def __init__(
         self,
         chain_id: str,
-        from_wallets: List[Wallet],
-        msgs: List[message.Message],
+        from_wallet: Wallet,
+        msgs: List[CosmosSdkMsg],
         account_number: int,
         client: "GrpcClient",
         gas_limit: int = DEFAULT_GAS_LIMIT,
-        fee: Optional[List[Coin]] = None,
+        fee: SingleCoin = ZERO_COIN,
         memo: str = "",
         timeout_height: Optional[int] = None,
     ) -> None:
@@ -44,10 +36,10 @@ class Transaction:
         Args:
             chain_id (str): chain id this transaction targets
 
-            from_wallets (List[Wallet]): wallets for the authorization
+            from_wallet (Wallet): wallet for the authorization
             related content of the transaction
 
-            msgs (List[message.Message]): messages to be included in this transaction
+            msgs (List[CosmosSdkMsg]): messages to be included in this transaction
 
             account_number (int): account number of the account in state
 
@@ -56,8 +48,8 @@ class Transaction:
             gas_limit (int, optional): maximum gas can be used in transaction processing.
             Defaults to DEFAULT_GAS_LIMIT.
 
-            fee (Optional[List[Coin]], optional): amount of coins to be paid as a fee.
-            Defaults to None.
+            fee (SingleCoin): amount of coins to be paid as a fee.
+            Defaults to zero CRO.
 
             memo (str, optional): note to be added to the transaction. Defaults to "".
 
@@ -65,80 +57,42 @@ class Transaction:
             after timeout height. Defaults to None.
         """
         self._chain_id = chain_id
-        self._packed_msgs = self._pack_msgs_to_any_msgs(msgs)
+        self._msgs = msgs
         self._fee = fee
-        self._from_wallets = from_wallets
+        self._from_wallet = from_wallet
         self._memo = memo
         self._timeout_height = timeout_height
         self._account_number = account_number
         self._gas_limit = gas_limit
         self._client = client
+        timeout = 0
+        if timeout_height is not None:
+            timeout = timeout_height
+        self._tx_info = CosmosSdkTxInfo(
+            account_number,
+            0,
+            gas_limit,
+            fee,
+            timeout,
+            memo,
+            Network.OTHER(chain_id, 394, "cro"),
+        )
 
-    def _pack_msgs_to_any_msgs(self, msgs: List[message.Message]) -> List[any_pb2.Any]:
-        return [pack_to_any_message(msg) for msg in msgs]
-
-    def append_message(self, *msgs: message.Message) -> "Transaction":
-        """Append more messages in this transaction.
+    def append_message(self, msg: CosmosSdkMsg) -> "Transaction":
+        """Append a message to this transaction.
 
         Args:
-            *msgs (message.Message): messages to be included in this transaction
+            msg (CosmosSdkMsg): a message to be included in this transaction
 
         Returns:
             Transaction: transaction object with newly added messages
         """
-        self._packed_msgs.extend(self._pack_msgs_to_any_msgs(list(msgs)))
-
-        return self
-
-    def set_signatures(self, *signatures: bytes) -> "Transaction":
-        """Set signatures for this transaction.
-
-        Args:
-            *signatures (bytes): signatures to be included in this transaction
-
-        Returns:
-            Transaction: transaction object with newly added signatures
-        """
-
-        self._signatures = list(signatures)
+        self._msgs.append(msg)
 
         return self
 
     @property
-    def tx_body(self) -> TxBody:
-        return TxBody(messages=self._packed_msgs, memo=self._memo)
-
-    @property
-    def auth_info(self) -> AuthInfo:
-        signer_infos = []
-        for wallet in self._from_wallets:
-            # query account to get the latest account.sequence
-            account = self._client.query_account(wallet.address)
-
-            signer_info = SignerInfo(
-                public_key=pack_to_any_message(PubKey(key=wallet.public_key)),
-                mode_info=ModeInfo(single=ModeInfo.Single(mode=SignMode.SIGN_MODE_DIRECT)),
-                sequence=account.sequence,
-            )
-
-            signer_infos.append(signer_info)
-
-        return AuthInfo(
-            signer_infos=signer_infos, fee=Fee(amount=self._fee, gas_limit=self._gas_limit)
-        )
-
-    @property
-    def sign_doc(self) -> SignDoc:
-        return SignDoc(
-            body_bytes=self.tx_body.SerializeToString(),
-            auth_info_bytes=self.auth_info.SerializeToString(),
-            chain_id=self._chain_id,
-            account_number=self._account_number,
-        )
-
-    @property
-    def signed_tx(self) -> Tx:
-        if self._signatures is None:
-            raise TypeError("Set signatures first before getting signed_tx")
-
-        return Tx(body=self.tx_body, auth_info=self.auth_info, signatures=self._signatures)
+    def signed_tx(self) -> bytes:
+        account = self._client.query_account(self._from_wallet.address)
+        self._tx_info.sequence_number = account.sequence
+        return self._from_wallet.sign_tx(self._tx_info, self._msgs)

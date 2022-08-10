@@ -2,6 +2,10 @@
 
 This log documents all public API breaking backwards incompatible changes.
 
+## 3.0.0 - 10/August/2022
+
+[#52](https://github.com/crypto-org-chain/chainlibpy/pull/52) refactor to use DeFi Wallet Core which enables more functionality
+
 ## 2.2.0 - 17/May/2022
 
 [#26](https://github.com/crypto-org-chain/chainlibpy/issues/26) [#27](https://github.com/crypto-org-chain/chainlibpy/issues/27) [#28](https://github.com/crypto-org-chain/chainlibpy/issues/28) Refactor protobuf message to class to add more functionalities and hide protobuf complexity

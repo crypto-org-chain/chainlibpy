@@ -57,15 +57,30 @@ def blockchain_accounts(data_folder: "Path", chain_id):
 @pytest.fixture(scope="session", autouse=True)
 def local_test_network_config(data_folder: "Path", chain_id):
     validator0_app_config_file = data_folder.joinpath(chain_id, "node0", "config", "app.toml")
+    validator0_tm_config_file = data_folder.joinpath(chain_id, "node0", "config", "config.toml")
 
     if not Path(validator0_app_config_file).is_file():
         raise FileNotFoundError(f"{validator0_app_config_file} not found")
 
+    if not Path(validator0_tm_config_file).is_file():
+        raise FileNotFoundError(f"{validator0_tm_config_file} not found")
+
     with open(validator0_app_config_file, "r") as f:
         validator0_app_config = toml.load(f)
 
+    with open(validator0_tm_config_file, "r") as f:
+        validator0_tm_config = toml.load(f)
+
     return NetworkConfig(
-        grpc_endpoint=validator0_app_config["grpc"]["address"],
+        grpc_endpoint=validator0_app_config["grpc"]["address"].replace(
+            "tcp://0.0.0.0", "http://127.0.0.1"
+        ),
+        tendermint_rpc=validator0_tm_config["rpc"]["laddr"].replace(
+            "tcp://0.0.0.0", "http://127.0.0.1"
+        ),
+        rest_api=validator0_app_config["api"]["address"].replace(
+            "tcp://0.0.0.0", "http://127.0.0.1"
+        ),
         chain_id=chain_id,
         address_prefix="cro",
         coin_denom="cro",
