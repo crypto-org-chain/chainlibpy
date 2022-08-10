@@ -32,8 +32,8 @@ def build(setup_kwargs):
         binding=Binding.NoBinding,
     )
     print(extension)
-    lib_name = extension.get_lib_name(quiet=False)
-    print("lib_name:", lib_name)
+    # lib_name = extension.get_lib_name(quiet=False)
+    # print("lib_name:", lib_name)
 
     # https://docs.python.org/3/distutils/apiref.html#distutils.core.Distribution
     dist = Distribution(attrs=setup_kwargs)
