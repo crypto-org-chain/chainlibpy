@@ -1,3 +1,9 @@
+# 🚨 DEPRECATED 🚨 
+
+This repo has been deprecated. You can generate protobuf code yourself or generate Python bindings directly from [DeFi Wallet Core](https://github.com/crypto-com/defi-wallet-core-rs#python) instead. Please reference that repository in the future.
+
+-------
+
 [![Build Status](https://travis-ci.com/crypto-org-chain/chainlibpy.svg?branch=master)](https://travis-ci.com//chainlibpy)
 [![codecov.io](https://codecov.io/gh/crypto-org-chain/chainlibpy/branch/master/graph/badge.svg)](https://codecov.io/gh/crypto-org-chain/chainlibpy)
 [![PyPI version](https://img.shields.io/pypi/v/chainlibpy)](https://pypi.org/project/chainlibpy)
